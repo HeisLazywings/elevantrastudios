@@ -78,7 +78,7 @@ export default function ContactForm() {
   Inquiry Received
 </h3>
 
-<p className="mx-auto mt-4 max-w-md text-white/65">
+    <p className="mx-auto mt-4 max-w-md text-white/65">
   Thank you for contacting Elevanta Studio. Your inquiry has been successfully
   submitted and our team will review it shortly. You can expect a response
   within one business day.
