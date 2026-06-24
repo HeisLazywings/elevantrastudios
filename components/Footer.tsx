@@ -19,15 +19,24 @@ export default function Footer() {
             </p>
             <div className="mt-8 flex gap-3">
               {[
-                { icon: Linkedin, href: "#", label: "LinkedIn" },
-                { icon: Github, href: "#", label: "GitHub" },
-                { icon: Instagram, href: "#", label: "Instagram" },
-              ].map(({ icon: Icon, href, label }) => (
+                {
+                icon: Linkedin,
+                 href: "https://www.linkedin.com/in/ahmed-abdulsalam-a91449366",
+                label: "LinkedIn",
+                 },
+                 {
+                 icon: Instagram,
+                href: "https://www.instagram.com/datguylazywings",
+                label: "Instagram",
+                  },
+                ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                 rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-white/70 transition-all hover:border-gold/40 hover:bg-gold/10 hover:text-white"
+                className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-white/70 transition-all hover:border-gold/40 hover:bg-gold/10 hover:text-white"
                 >
                   <Icon size={16} />
                 </a>
