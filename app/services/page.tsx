@@ -2,24 +2,25 @@ import type { Metadata } from "next";
 import { services, processSteps } from "@/lib/data";
 import Reveal from "@/components/Reveal";
 import FinalCTA from "@/components/FinalCTA";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Services — Premium Web Design & Development",
   description:
     "Website development, landing pages, e-commerce, maintenance, and performance optimization for ambitious brands.",
-  alternates: { canonical: "/services" },
+  ...(absoluteUrl("/services") ? { alternates: { canonical: absoluteUrl("/services") } } : {}),
   openGraph: {
-    title: "Services — Elevanta Studio",
+    title: "Services — Elevantra Studios",
     description:
       "Premium web design, development, and growth services for ambitious brands.",
-    url: "/services",
+    ...(absoluteUrl("/services") ? { url: absoluteUrl("/services") } : {}),
   },
 };
 
 const faqs = [
   {
     q: "How long does a typical project take?",
-    a: "Most engagements run 4 to 8 weeks, depending on scope. Landing pages can launch in as little as 2 weeks; full custom builds typically take 6 to 8.",
+    a: "The timeline depends on the scope, content readiness, integrations, and review process. We agree on milestones and responsibilities before work begins.",
   },
   {
     q: "Do you work with existing brands?",
@@ -31,7 +32,7 @@ const faqs = [
   },
   {
     q: "Do you offer ongoing support?",
-    a: "Always. We offer maintenance, performance monitoring, and iterative growth work after launch so your website continues to compound in value.",
+    a: "Maintenance, performance reviews, and further improvements can be scoped alongside the build. We agree on the support arrangements your project needs.",
   },
 ];
 
@@ -107,14 +108,14 @@ export default function ServicesPage() {
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="heading-display mb-16 max-w-3xl text-[clamp(2.25rem,4.5vw,4rem)]">
-              Why teams choose Elevanta.
+              Designed around your business.
             </h2>
           </Reveal>
           <div className="grid gap-10 md:grid-cols-3">
             {[
-              { t: "Brand Perception", d: "Look like the leader in your category from the first impression." },
-              { t: "Qualified Leads", d: "A site engineered to attract and convert your ideal customers." },
-              { t: "Lasting Asset", d: "Built to scale with your business for years, not months." },
+              { t: "Credibility", d: "Present the information and proof a prospective customer needs to consider your business." },
+              { t: "Clearer Enquiries", d: "Help visitors understand your offer and reach out with useful context." },
+              { t: "Room to Evolve", d: "Use a maintainable structure that can adapt as your content and business needs change." },
             ].map((b) => (
               <Reveal key={b.t}>
                 <div className="glass rounded-3xl p-8">

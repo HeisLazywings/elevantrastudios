@@ -8,7 +8,7 @@ export default function WhyChoose() {
         <div className="mb-16 max-w-3xl">
           <Reveal>
             <p className="mb-4 text-xs uppercase tracking-[0.35em] text-gold">
-              Why Elevanta
+              Why Elevantra Studios
             </p>
           </Reveal>
           <Reveal delay={0.1}>

@@ -7,7 +7,7 @@ export default function AboutSection() {
         <div className="lg:col-span-5">
           <Reveal>
             <p className="mb-6 text-xs uppercase tracking-[0.35em] text-gold">
-              About Elevanta
+              About Elevantra Studios
             </p>
           </Reveal>
           <Reveal delay={0.1}>
@@ -20,7 +20,7 @@ export default function AboutSection() {
         <div className="lg:col-span-6 lg:col-start-7">
           <Reveal delay={0.2}>
             <p className="text-lg leading-relaxed text-white/70">
-              Elevanta Studio creates digital experiences that blend design,
+              Elevantra Studios creates digital experiences that blend design,
               performance, and strategy. Every website is crafted to help
               businesses build credibility, attract customers, and stand
               apart in competitive markets.
@@ -28,10 +28,10 @@ export default function AboutSection() {
           </Reveal>
           <Reveal delay={0.3}>
             <div className="mt-12 grid grid-cols-2 gap-8 border-t border-white/10 pt-10">
-              <Stat n="40+" l="Projects delivered" />
-              <Stat n="98" l="Avg. Lighthouse score" />
-              <Stat n="12" l="Industries served" />
-              <Stat n="100%" l="Custom designed" />
+              <Capability title="Strategy" detail="A clear purpose for every page" />
+              <Capability title="Design" detail="A considered visual language" />
+              <Capability title="Development" detail="Responsive, accessible foundations" />
+              <Capability title="Care" detail="Room to maintain and evolve" />
             </div>
           </Reveal>
         </div>
@@ -40,13 +40,13 @@ export default function AboutSection() {
   );
 }
 
-function Stat({ n, l }: { n: string; l: string }) {
+function Capability({ title, detail }: { title: string; detail: string }) {
   return (
     <div>
-      <div className="heading-display text-4xl text-gold-gradient md:text-5xl">
-        {n}
+      <div className="font-display text-2xl text-gold-light">
+        {title}
       </div>
-      <div className="mt-2 text-sm text-white/60">{l}</div>
+      <div className="mt-2 text-sm leading-relaxed text-white/60">{detail}</div>
     </div>
   );
 }

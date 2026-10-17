@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import FinalCTA from "@/components/FinalCTA";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About — Ahmed Abdulsalam, Founder of Elevanta Studio",
+  title: "About — Ahmed Abdulsalam",
   description:
     "Ahmed Abdulsalam is a web developer creating premium websites that combine exceptional design, performance, and business impact.",
-  alternates: { canonical: "/about" },
+  ...(absoluteUrl("/about") ? { alternates: { canonical: absoluteUrl("/about") } } : {}),
   openGraph: {
-    title: "About Elevanta Studio",
+    title: "About Elevantra Studios",
     description:
-      "Meet the founder behind Elevanta Studio and the principles that guide our work.",
-    url: "/about",
+      "Meet the founder behind Elevantra Studios and the principles that guide our work.",
+    ...(absoluteUrl("/about") ? { url: absoluteUrl("/about") } : {}),
   },
 };
 
@@ -29,12 +30,12 @@ const values = [
   {
     title: "Performance",
     description:
-      "Beautiful is not enough. Our work loads fast, ranks well, and converts.",
+      "We consider loading speed, accessibility, search foundations, and the path to an enquiry throughout the build.",
   },
   {
     title: "Partnership",
     description:
-      "We stay engaged after launch — your growth is the real measure of our work.",
+      "We agree on the handover and support each project needs, with clear responsibilities beyond launch.",
   },
 ];
 

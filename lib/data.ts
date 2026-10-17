@@ -14,7 +14,7 @@ export const services = [
   {
     title: "Landing Pages",
     description:
-      "High-converting landing pages optimized for campaigns, products, and lead generation.",
+      "Focused landing pages that connect campaign messages, product information, and a clear next step.",
     deliverables: [
       "Conversion-focused copy direction",
       "Bespoke hero & section design",
@@ -73,85 +73,6 @@ export const services = [
   },
 ];
 
-export const projects = [
-  {
-    slug: "luxury-restaurant",
-    title: "Luxury Restaurant Experience",
-    category: "Hospitality",
-    year: "2024",
-    overview:
-      "An immersive digital presence for a fine-dining destination redefining modern hospitality.",
-    challenge:
-      "Translate the in-restaurant atmosphere into a digital experience that drives reservations and elevates brand perception.",
-    solution:
-      "Cinematic hero motion, an editorial menu layout, and a reservation flow built for speed and elegance.",
-    technologies: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-    results: [
-      "+184% reservation requests",
-      "2.4s reduction in load time",
-      "98 Lighthouse score",
-    ],
-    gradient: "from-amber-900/40 via-bg to-bg",
-  },
-  {
-    slug: "real-estate-platform",
-    title: "Modern Real Estate Platform",
-    category: "Real Estate",
-    year: "2024",
-    overview:
-      "A premium property platform that turns listings into aspirational experiences.",
-    challenge:
-      "Differentiate from template-driven competitors and convert high-intent buyers.",
-    solution:
-      "A bespoke listing layout, interactive map experience, and qualified-lead intake flow.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "WordPress"],
-    results: [
-      "3.2x qualified leads",
-      "+62% time on site",
-      "Top 3 SERP for target keywords",
-    ],
-    gradient: "from-slate-700/30 via-bg to-bg",
-  },
-  {
-    slug: "personal-brand",
-    title: "Premium Personal Brand Website",
-    category: "Personal Brand",
-    year: "2024",
-    overview:
-      "An editorial personal brand site that opened the door to international speaking engagements.",
-    challenge:
-      "Position the founder as a category authority without feeling self-promotional.",
-    solution:
-      "Magazine-grade typography, restrained motion, and a content engine built for ongoing publishing.",
-    technologies: ["Next.js", "React", "Tailwind CSS", "Vercel"],
-    results: [
-      "12 inbound media invitations",
-      "+220% newsletter growth",
-      "Featured by 3 industry publications",
-    ],
-    gradient: "from-zinc-700/30 via-bg to-bg",
-  },
-  {
-    slug: "startup-launch",
-    title: "Technology Startup Launch Platform",
-    category: "SaaS",
-    year: "2025",
-    overview:
-      "A launch platform that helped a Series A startup secure its first 1,000 customers.",
-    challenge:
-      "Communicate complex product value in a confident, premium voice and convert at scale.",
-    solution:
-      "A modular design system, conversion-focused hero, and instrumented funnels.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "GitHub", "Vercel"],
-    results: [
-      "1,000+ paying customers",
-      "6.8% landing conversion",
-      "Featured on Product Hunt",
-    ],
-    gradient: "from-emerald-900/30 via-bg to-bg",
-  },
-];
-
 export const processSteps = [
   {
     n: "01",
@@ -188,27 +109,6 @@ export const processSteps = [
     title: "Growth",
     description:
       "Ongoing optimization, iteration, and partnership beyond launch day.",
-  },
-];
-
-export const testimonials = [
-  {
-    quote:
-      "Elevanta transformed our online presence. The final website immediately elevated how customers perceived our brand.",
-    name: "Director of Marketing",
-    role: "Hospitality Group",
-  },
-  {
-    quote:
-      "The attention to detail, design quality, and communication throughout the project were exceptional.",
-    name: "Founder",
-    role: "Real Estate Firm",
-  },
-  {
-    quote:
-      "Our website became a genuine business asset rather than just an online brochure.",
-    name: "Managing Partner",
-    role: "Professional Services",
   },
 ];
 
