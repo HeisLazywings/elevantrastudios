@@ -12,6 +12,8 @@ import { absoluteUrl, serializeJsonLd, siteName } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams() {
   return publicProjects.map(({ slug }) => ({ slug }));
 }
