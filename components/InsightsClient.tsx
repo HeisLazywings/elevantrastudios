@@ -31,6 +31,7 @@ export default function InsightsClient({ articles }: { articles: ArticleSummary[
         </p>
       </div>
       <div id="insights-results" className="grid grid-cols-1 items-start gap-x-12 gap-y-16 md:grid-cols-2 lg:grid-cols-12">
+        {!filtered.length && <p className="text-white/60 lg:col-span-12">The next studio insight will appear here when it is published.</p>}
         {filtered.map((article, index) => (
           <div key={article.slug} className={index === 0 ? "lg:col-span-7" : "lg:col-span-5 lg:mt-16"}>
             <ArticleCard article={article} lead={index === 0} />

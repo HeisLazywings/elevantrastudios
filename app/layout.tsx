@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import SiteChrome from "@/components/SiteChrome";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
@@ -98,9 +99,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <MotionProvider>
-          <Navbar />
-          <main id="main" tabIndex={-1}>{children}</main>
-          <Footer />
+          <SiteChrome navigation={<Navbar />} footer={<Footer />}>{children}</SiteChrome>
         </MotionProvider>
       </body>
     </html>

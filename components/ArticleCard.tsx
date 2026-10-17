@@ -7,7 +7,9 @@ export default function ArticleCard({ article, lead = false }: { article: Articl
   return (
     <article className={`group min-w-0 ${lead ? "lg:col-span-7" : ""}`}>
       <Link href={`/insights/${article.slug}`} className="block" aria-labelledby={`article-${article.slug}`}>
-        <InsightVisual article={article} className="transition-colors duration-500 group-hover:border-gold/50" />
+        {article.coverMediaId
+          ? <img src={`/api/media/${article.coverMediaId}`} alt={article.coverAlt ?? ""} loading="lazy" decoding="async" className="aspect-[4/3] w-full border border-white/10 object-cover transition-opacity group-hover:opacity-90" />
+          : <InsightVisual article={article} className="transition-colors duration-500 group-hover:border-gold/50" />}
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.65rem] uppercase tracking-[0.18em]">
           <span className="text-gold-light">{article.category}</span>
           <span className="text-white/50">{article.readingTime} min read</span>

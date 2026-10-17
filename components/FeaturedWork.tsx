@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { publicProjects } from "@/lib/projects";
+import { getSiteProjects } from "@/lib/content";
 import Reveal from "@/components/Reveal";
 import ProjectCard from "@/components/ProjectCard";
 
-export default function FeaturedWork() {
+export default async function FeaturedWork() {
+  const projects = await getSiteProjects();
+  if (!projects.length) return null;
   return (
     <section className="relative py-24 md:py-32" aria-labelledby="featured-work-title">
       <div className="container-x">
@@ -21,7 +23,7 @@ export default function FeaturedWork() {
             </Link>
           </Reveal>
         </div>
-        {publicProjects.slice(0, 1).map((project) => (
+        {projects.slice(0, 1).map((project) => (
           <Reveal key={project.slug}>
             <ProjectCard project={project} />
           </Reveal>

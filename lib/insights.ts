@@ -1,7 +1,4 @@
-export type ArticleCategory =
-  | "Customer journeys"
-  | "Hospitality"
-  | "Trust & credibility";
+export type ArticleCategory = string;
 
 export type ArticleSection = {
   id: string;
@@ -23,6 +20,8 @@ export type Article = {
   takeaway: string;
   /** Internal editorial notes. Do not render these as published article content. */
   reviewNotes: string[];
+  coverMediaId?: string;
+  coverAlt?: string;
 };
 
 export const articles: Article[] = [
@@ -235,12 +234,14 @@ export const featuredArticles = articles.filter((article) => article.featured);
 
 export type ArticleSummary = Pick<Article, "slug" | "category" | "issue" | "title" | "summary"> & {
   readingTime: number;
+  coverMediaId?: string;
+  coverAlt?: string;
 };
 
 /** Only send listing fields to the interactive filter, never full bodies or review notes. */
 export function toArticleSummary(article: Article): ArticleSummary {
   const { slug, category, issue, title, summary } = article;
-  return { slug, category, issue, title, summary, readingTime: getReadingTime(article) };
+  return { slug, category, issue, title, summary, readingTime: getReadingTime(article), ...(article.coverMediaId ? { coverMediaId: article.coverMediaId, coverAlt: article.coverAlt } : {}) };
 }
 
 export function getArticle(slug: string): Article | undefined {

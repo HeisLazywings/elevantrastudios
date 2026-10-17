@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { articles, toArticleSummary } from "@/lib/insights";
+import { toArticleSummary } from "@/lib/insights";
+import { getSiteArticles } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site";
 import InsightsClient from "@/components/InsightsClient";
 
@@ -16,7 +17,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InsightsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function InsightsPage() {
+  const articles = await getSiteArticles();
   return (
     <>
       <section className="container-x pb-16 pt-40 md:pb-24 md:pt-48">

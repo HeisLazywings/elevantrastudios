@@ -1,10 +1,10 @@
-import { publicProjects } from "@/lib/projects";
+import { getSiteProjects } from "@/lib/content";
 import Reveal from "@/components/Reveal";
 import ProjectCard from "@/components/ProjectCard";
 
 // Only approved entries belong in a portfolio listing, including review builds.
-export default function WorkClient() {
-  const projects = publicProjects;
+export default async function WorkClient() {
+  const projects = await getSiteProjects();
 
   return (
     <>
@@ -25,6 +25,7 @@ export default function WorkClient() {
         </div>
       </section>
       <section className="container-x space-y-20 pb-24 md:space-y-28 md:pb-32" aria-label="Selected projects">
+        {!projects.length && <p className="section-rule pt-8 text-white/60">Project studies will appear here as they are published.</p>}
         {projects.map((project, index) => (
           <Reveal key={project.slug}>
             <ProjectCard project={project} index={index} headingAs="h2" />

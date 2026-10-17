@@ -39,7 +39,15 @@ Without Supabase settings, the contact page offers email rather than crashing. W
 - `/insights/[slug]` and `/work/[slug]`: metadata, shareable URLs, related reading or contents navigation. The sitemap includes public entries and excludes drafts.
 - Public URLs use `lib/site.ts`, including canonical tags, Open Graph metadata, robots, sitemap, and structured data. No invented publication dates or performance figures are used.
 
-Private project records live in ignored `.content-drafts/projects.json`, outside Git. An optional array of `Project` records with `visibility: "review"` can be read only while `CONTENT_PREVIEW=true`. Draft routes check the setting at request time, are noindex, and never appear in listings or sitemaps. Fresh clones do not contain these private records. To review locally, start with `CONTENT_PREVIEW=true npm run dev` and visit the draft's known work URL directly. Private client names must not be added to tracked content without approval.
+Private project records remain in ignored `.content-drafts/projects.json`, outside Git. Fresh clones do not contain these private records. In this CMS branch they are not served through public work routes; create their entries as private drafts through the authenticated dashboard. Never add private client names to tracked seed data.
+
+## Private CMS
+
+This branch adds a separate Supabase-backed administration system at `/admin` with password login at `/admin/login`. Public navigation has no administration links. Follow [the CMS setup guide](docs/CMS_SETUP.md) to apply migrations, create your own Auth user, and add its UUID to the database-owner-managed administrator allowlist.
+
+The CMS manages articles, case studies, resources, approved client profiles, and private media. Publishing uses live database reads and path invalidation. Set `CMS_CONTENT_ENABLED=true` after configuration and initial draft review to switch the public site from typed local content to published CMS records. Once enabled, unpublishing or deleting an entry removes it publicly without falling back to its local original. No new commit or deployment is required for subsequent content edits.
+
+In the CMS branch, private content previews exist only at authenticated `/admin/preview/[id]` URLs. The earlier local `CONTENT_PREVIEW` flag no longer enables public work draft routes. The ignored private draft file remains outside Git; enter approved details through the dashboard as a private draft. Never add private client names to seed data.
 
 ## Publication review
 

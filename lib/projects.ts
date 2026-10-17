@@ -1,5 +1,5 @@
 export type ProjectSection = {
-  id: "context" | "challenge" | "discovery" | "strategy" | "solution" | "outcomes" | "status";
+  id: string;
   label: string;
   title: string;
   paragraphs: readonly string[];
@@ -18,7 +18,7 @@ export type Project = {
   slug: string;
   title: string;
   category: string;
-  designation: "Concept Demonstration" | "Client engagement";
+  designation: "Concept Demonstration" | "Client engagement" | "Studio project";
   visibility: "public" | "review";
   summary: string;
   headline: string;
@@ -34,6 +34,8 @@ export type Project = {
   };
   sections: readonly ProjectSection[];
   screenshots?: readonly ProjectScreenshot[];
+  coverMediaId?: string;
+  coverAlt?: string;
 };
 
 const projects: readonly Project[] = [

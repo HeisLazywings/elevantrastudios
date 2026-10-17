@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { featuredArticles, getReadingTime } from "@/lib/insights";
+import { getReadingTime } from "@/lib/insights";
+import { getSiteArticles } from "@/lib/content";
 import Reveal from "@/components/Reveal";
 import InsightVisual from "@/components/InsightVisual";
 
-export default function InsightsPreview() {
-  const [lead, ...rest] = featuredArticles;
+export default async function InsightsPreview() {
+  const [lead, ...rest] = (await getSiteArticles()).filter((article) => article.featured).slice(0, 3);
   if (!lead) return null;
 
   return (
@@ -22,7 +23,9 @@ export default function InsightsPreview() {
           <Reveal className="lg:col-span-6">
             <article className="group">
               <Link href={`/insights/${lead.slug}`} className="block">
-                <InsightVisual article={lead} className="aspect-[16/10]" />
+                {lead.coverMediaId
+                  ? <img src={`/api/media/${lead.coverMediaId}`} alt={lead.coverAlt ?? ""} loading="lazy" decoding="async" className="aspect-[16/10] w-full border border-white/10 object-cover" />
+                  : <InsightVisual article={lead} className="aspect-[16/10]" />}
                 <p className="eyebrow mt-6">{lead.category} <span className="ml-3 text-white/50">{getReadingTime(lead)} min read</span></p>
                 <h3 className="mt-4 font-display text-3xl leading-[1.12] tracking-tight transition-colors group-hover:text-gold-light sm:text-4xl">{lead.title}</h3>
                 <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/65">{lead.summary}</p>

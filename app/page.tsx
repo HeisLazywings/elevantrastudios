@@ -8,6 +8,8 @@ import Process from "@/components/Process";
 import InsightsPreview from "@/components/InsightsPreview";
 import FinalCTA from "@/components/FinalCTA";
 
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   return (
     <>

@@ -4,6 +4,7 @@ import FinalCTA from "@/components/FinalCTA";
 import { absoluteUrl, siteName } from "@/lib/site";
 
 const canonical = absoluteUrl("/work");
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Work & Design Studies",

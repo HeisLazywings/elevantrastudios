@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getArticle } from "@/lib/insights";
+import { getSiteArticle } from "@/lib/content";
 import { siteName } from "@/lib/site";
 
 export const alt = "Insights — Elevantra Studios";
@@ -8,7 +8,7 @@ export const contentType = "image/png";
 
 export default async function OpenGraphImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getSiteArticle(slug);
   return new ImageResponse(
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%", height: "100%", background: "#12130e", color: "#eee6d7", padding: 65, borderLeft: "10px solid #c8a45d" }}>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 21, letterSpacing: 3, color: "#c8a45d", textTransform: "uppercase" }}><span>{siteName} / Insights</span><span>{article?.issue ?? ""}</span></div>

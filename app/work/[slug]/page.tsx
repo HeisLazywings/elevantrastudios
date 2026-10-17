@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { connection } from "next/server";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { getProjectBySlug, publicProjects } from "@/lib/projects";
-import { getDraftProjectBySlug } from "@/lib/project-drafts";
+import { documentOutline, getSiteProject } from "@/lib/content";
+import CmsBody from "@/components/CmsBody";
 import ProjectVisual from "@/components/ProjectVisual";
 import Reveal from "@/components/Reveal";
 import { absoluteUrl, serializeJsonLd, siteName } from "@/lib/site";
@@ -14,25 +13,19 @@ type Props = { params: Promise<{ slug: string }> };
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return publicProjects.map(({ slug }) => ({ slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  // Draft access is decided on each request, never baked into a static response.
-  if (!publicProjects.some((project) => project.slug === slug)) await connection();
-  const project = getProjectBySlug(slug) ?? getDraftProjectBySlug(slug);
+  const project = await getSiteProject(slug);
   if (!project) return { title: "Study not found", robots: { index: false, follow: false } };
   const canonical = absoluteUrl(`/work/${project.slug}`);
 
   return {
-    title: `${project.title} — ${project.designation}`,
-    description: project.summary,
+    title: project.cmsEntry?.seo_title || `${project.title} — ${project.designation}`,
+    description: project.cmsEntry?.seo_description || project.summary,
     ...(canonical ? { alternates: { canonical } } : {}),
     openGraph: {
-      title: `${project.title} — ${project.designation} | ${siteName}`,
-      description: project.summary,
+      title: project.cmsEntry?.seo_title || `${project.title} — ${project.designation} | ${siteName}`,
+      description: project.cmsEntry?.seo_description || project.summary,
       ...(canonical ? { url: canonical } : {}),
       type: "article",
     },
@@ -42,9 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  if (!publicProjects.some((project) => project.slug === slug)) await connection();
-  const project = getProjectBySlug(slug) ?? getDraftProjectBySlug(slug);
+  const project = await getSiteProject(slug);
   if (!project) notFound();
+  const outline = [...project.sections, ...(project.cmsEntry ? documentOutline(project.cmsEntry.body).map((section) => ({ ...section, label: section.title })) : [])];
   const studyUrl = absoluteUrl(`/work/${project.slug}`);
   const jsonLd = {
     "@context": "https://schema.org",
@@ -101,7 +94,7 @@ export default async function ProjectPage({ params }: Props) {
           <nav aria-label="In this study" className="border-t border-white/15 pt-5 lg:sticky lg:top-28">
             <p className="eyebrow mb-5">In this study</p>
             <ol className="flex flex-wrap gap-x-6 gap-y-3 lg:flex-col">
-              {project.sections.map((section, index) => (
+              {outline.map((section, index) => (
                 <li key={section.id}>
                   <a href={`#${section.id}`} className="inline-flex min-h-11 items-center gap-3 text-xs leading-relaxed text-white/60 transition-colors hover:text-gold">
                     <span aria-hidden="true" className="text-white/30">{String(index + 1).padStart(2, "0")}</span>
@@ -129,6 +122,7 @@ export default async function ProjectPage({ params }: Props) {
               </Reveal>
             </section>
           ))}
+          {project.cmsEntry && <CmsBody document={project.cmsEntry.body} />}
           {project.screenshots?.slice(1).map((screenshot) => (
             <figure key={screenshot.src} className="mb-12 border border-white/10">
               <Image src={screenshot.src} width={screenshot.width} height={screenshot.height} alt={screenshot.alt} sizes="(max-width: 1023px) 100vw, 66vw" className="h-auto w-full" />

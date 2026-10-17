@@ -10,6 +10,14 @@ export default function ProjectVisual({
 }) {
   const screenshot = project.screenshots?.[0];
 
+  if (project.coverMediaId) {
+    return (
+      <figure className="overflow-hidden border border-white/10 bg-bg-secondary">
+        <img src={`/api/media/${project.coverMediaId}`} alt={project.coverAlt ?? ""} loading={priority ? "eager" : "lazy"} decoding="async" className="aspect-[16/10] w-full object-contain" />
+      </figure>
+    );
+  }
+
   if (screenshot) {
     return (
       <figure className="overflow-hidden border border-white/10 bg-bg-secondary">
