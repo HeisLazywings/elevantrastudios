@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { MouseEvent, ReactNode, useRef } from "react";
 
 type Props = {
@@ -17,6 +17,7 @@ export default function MagneticButton({
   variant = "primary",
   className = "",
 }: Props) {
+  const reduce = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -24,6 +25,7 @@ export default function MagneticButton({
   const sy = useSpring(y, { stiffness: 200, damping: 18 });
 
   const handleMove = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (reduce) return;
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();

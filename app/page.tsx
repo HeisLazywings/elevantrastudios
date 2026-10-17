@@ -5,7 +5,7 @@ import Services from "@/components/Services";
 import FeaturedWork from "@/components/FeaturedWork";
 import WhyChoose from "@/components/WhyChoose";
 import Process from "@/components/Process";
-import Testimonials from "@/components/Testimonials";
+import InsightsPreview from "@/components/InsightsPreview";
 import FinalCTA from "@/components/FinalCTA";
 
 export default function HomePage() {
@@ -18,7 +18,7 @@ export default function HomePage() {
       <FeaturedWork />
       <WhyChoose />
       <Process />
-      <Testimonials />
+      <InsightsPreview />
       <FinalCTA />
     </>
   );

@@ -2,9 +2,10 @@
 
 import { processSteps } from "@/lib/data";
 import Reveal from "./Reveal";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Process() {
+  const reduce = useReducedMotion();
   return (
     <section className="relative overflow-hidden bg-bg-secondary/40 py-32">
       <div className="container-x">
@@ -30,7 +31,7 @@ export default function Process() {
             {processSteps.map((s, i) => (
               <motion.li
                 key={s.n}
-                initial={{ opacity: 0, y: 30 }}
+                initial={reduce ? false : { opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}

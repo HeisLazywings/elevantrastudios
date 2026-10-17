@@ -16,6 +16,7 @@ export default function TechStack() {
           {items.map((t, i) => (
             <span
               key={`${t}-${i}`}
+              aria-hidden={i >= techStack.length ? true : undefined}
               className="font-display text-2xl tracking-tight text-white/60 transition-colors hover:text-white md:text-3xl"
             >
               {t}

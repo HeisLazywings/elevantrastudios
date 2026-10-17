@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import MagneticButton from "./MagneticButton";
 import { ArrowDown } from "lucide-react";
 
 export default function Hero() {
+  const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -39,15 +40,15 @@ export default function Hero() {
         />
       </div>
 
-      <motion.div style={{ y, opacity }} className="container-x relative">
+      <motion.div style={reduce ? undefined : { y, opacity }} className="container-x relative">
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/70"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Digital Studio · Est. 2024
+          Digital Studio · Nigeria
         </motion.p>
 
         <h1 className="heading-display max-w-[18ch] text-[clamp(2.75rem,7vw,6.5rem)]">
@@ -62,7 +63,7 @@ export default function Hero() {
         </h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
           className="mt-8 max-w-xl text-base text-white/70 md:text-lg"
@@ -73,7 +74,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.8 }}
           className="mt-10 flex flex-wrap items-center gap-4"
@@ -89,7 +90,7 @@ export default function Hero() {
       <FloatingMock />
 
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={reduce ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-white/40"
@@ -112,10 +113,11 @@ function Reveal({
   delay?: number;
   inline?: boolean;
 }) {
+  const reduce = useReducedMotion();
   return (
     <span className={inline ? "inline-block overflow-hidden align-bottom" : "block overflow-hidden"}>
       <motion.span
-        initial={{ y: "110%" }}
+        initial={reduce ? false : { y: "110%" }}
         animate={{ y: "0%" }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay }}
         className="inline-block"
@@ -127,14 +129,15 @@ function Reveal({
 }
 
 function FloatingMock() {
+  const reduce = useReducedMotion();
   return (
     <div
       aria-hidden
       className="pointer-events-none absolute -right-24 top-1/2 hidden -translate-y-1/2 lg:block"
     >
       <motion.div
-        initial={{ opacity: 0, y: 40, rotate: -4 }}
-        animate={{ opacity: 1, y: 0, rotate: -6 }}
+        initial={reduce ? false : { opacity: 0, y: 40, rotate: -4 }}
+        animate={{ opacity: 1, y: 0, rotate: reduce ? 0 : -6 }}
         transition={{ delay: 0.7, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
         className="relative"
       >

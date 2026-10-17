@@ -3,17 +3,18 @@ import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/ContactForm";
 import { contact } from "@/lib/data";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Contact — Start a Project with Elevanta Studio",
+  title: "Contact — Start a Project",
   description:
-    "Tell us about your project. We respond to every inquiry within one business day.",
-  alternates: { canonical: "/contact" },
+    "Tell Elevantra Studios about your business, your goals, and the website you have in mind.",
+  ...(absoluteUrl("/contact") ? { alternates: { canonical: absoluteUrl("/contact") } } : {}),
   openGraph: {
-    title: "Contact Elevanta Studio",
+    title: "Contact Elevantra Studios",
     description:
-      "Start a premium website project. We respond within one business day.",
-    url: "/contact",
+      "Start a conversation about a considered website for your business.",
+    ...(absoluteUrl("/contact") ? { url: absoluteUrl("/contact") } : {}),
   },
 };
 
@@ -37,7 +38,7 @@ export default function ContactPage() {
             <Reveal delay={0.2}>
               <p className="mt-8 max-w-md text-lg text-white/70">
                 Tell us about your business, your goals, and the experience you
-                want to create. We&rsquo;ll respond within one business day.
+                want to create. We&rsquo;ll review your enquiry and discuss the next steps.
               </p>
             </Reveal>
 

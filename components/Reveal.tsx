@@ -17,6 +17,7 @@ export default function Reveal({
   const reduce = useReducedMotion();
   return (
     <motion.div
+      data-reveal="true"
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}

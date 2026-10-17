@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import WorkClient from "@/components/WorkClient";
 import FinalCTA from "@/components/FinalCTA";
+import { absoluteUrl, siteName } from "@/lib/site";
+
+const canonical = absoluteUrl("/work");
 
 export const metadata: Metadata = {
-  title: "Work — Selected Projects by Elevanta Studio",
+  title: "Work & Design Studies",
   description:
-    "A curated portfolio of premium websites for hospitality, real estate, personal brands, and technology startups.",
-  alternates: { canonical: "/work" },
+    "Explore Elevantra Studios’ selected work and clearly labelled concept demonstrations, with the business context and design thinking behind each study.",
+  ...(canonical ? { alternates: { canonical } } : {}),
+  ...(process.env.CONTENT_PREVIEW === "true" ? { robots: { index: false, follow: false } } : {}),
   openGraph: {
-    title: "Work — Elevanta Studio",
+    title: `Work & Design Studies — ${siteName}`,
     description:
-      "Selected projects: cinematic websites engineered for performance and brand impact.",
-    url: "/work",
+      "Selected work, clear context, and the thinking behind a considered digital experience.",
+    ...(canonical ? { url: canonical } : {}),
   },
 };
 

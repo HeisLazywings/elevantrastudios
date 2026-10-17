@@ -3,9 +3,10 @@
 import { services } from "@/lib/data";
 import Reveal from "./Reveal";
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Services() {
+  const reduce = useReducedMotion();
   return (
     <section className="relative py-32">
       <div className="container-x">
@@ -28,7 +29,7 @@ export default function Services() {
           {services.map((s, i) => (
             <motion.article
               key={s.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={reduce ? false : { opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{

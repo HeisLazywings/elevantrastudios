@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { contact } from "@/lib/data";
-import { Github, Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { siteName } from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -10,12 +11,15 @@ export default function Footer() {
           <div className="md:col-span-5">
             <Link
               href="/"
-              className="font-display text-xl tracking-[0.25em]"
+              aria-label="Elevantra Studios — Home"
+              className="inline-flex flex-col gap-2"
             >
-              ELEVANTA
+              <span className="font-display text-2xl leading-none tracking-[0.17em]">ELEVANTRA</span>
+              <span className="text-[0.55rem] leading-none tracking-[0.44em] text-white/55">STUDIOS</span>
             </Link>
             <p className="mt-6 max-w-sm text-sm text-white/60">
-              Digital Experiences That Elevate Businesses.
+              Considered websites. Clearer customer journeys. Practical thinking
+              for businesses building trust online.
             </p>
             <div className="mt-8 flex gap-3">
               {[
@@ -52,6 +56,7 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-white">Home</Link></li>
               <li><Link href="/services" className="hover:text-white">Services</Link></li>
               <li><Link href="/work" className="hover:text-white">Work</Link></li>
+              <li><Link href="/insights" className="hover:text-white">Insights</Link></li>
               <li><Link href="/about" className="hover:text-white">About</Link></li>
               <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
             </ul>
@@ -85,7 +90,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} Elevanta Studio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {siteName}. All rights reserved.</p>
           <p>Crafted with care in Nigeria.</p>
         </div>
       </div>

@@ -90,3 +90,69 @@ body {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* The publication shares the studio's type and colour system, with a quieter rhythm. */
+@layer components {
+  .eyebrow {
+    @apply text-[0.65rem] font-medium uppercase tracking-[0.24em] text-gold-light;
+  }
+
+  .editorial-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7.5vw, 7rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+
+  .section-rule {
+    @apply border-t border-white/15;
+  }
+
+  .text-link {
+    @apply inline-flex min-h-11 items-center gap-3 text-sm text-gold-light underline-offset-8 transition-colors hover:text-white hover:underline;
+  }
+
+  .reading-copy {
+    @apply text-base leading-[1.9] text-white/70 md:text-lg;
+  }
+
+  .reading-copy p + p {
+    @apply mt-6;
+  }
+
+  .reading-copy ul {
+    @apply mt-6 space-y-4 border-l border-gold/40 pl-6;
+  }
+
+  .reading-copy li {
+    @apply pl-1;
+  }
+
+  .editorial-grid {
+    @apply grid min-w-0 grid-cols-1 gap-x-10 gap-y-14 lg:grid-cols-12;
+  }
+}
+
+section[id], h2[id] {
+  scroll-margin-top: 8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

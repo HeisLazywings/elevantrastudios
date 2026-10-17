@@ -1,17 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MotionProvider from "@/components/MotionProvider";
+import { absoluteUrl, serializeJsonLd, siteDescription, siteName, siteUrl } from "@/lib/site";
+import { contact } from "@/lib/data";
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: [
+    { path: "../public/fonts/inter-latin-wght-normal.woff2", weight: "100 900", style: "normal" },
+    { path: "../public/fonts/inter-latin-wght-italic.woff2", weight: "100 900", style: "italic" },
+  ],
   variable: "--font-sans",
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
+const fraunces = localFont({
+  src: [
+    { path: "../public/fonts/fraunces-latin-full-normal.woff2", weight: "100 900", style: "normal" },
+    { path: "../public/fonts/fraunces-latin-full-italic.woff2", weight: "100 900", style: "italic" },
+  ],
   variable: "--font-display",
   display: "swap",
 });
@@ -23,41 +32,39 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  ...(siteUrl ? { metadataBase: siteUrl } : {}),
   title: {
-    default:
-      "Elevanta Studio | Digital Experiences That Elevate Businesses",
-    template: "%s | Elevanta Studio",
+    default: `${siteName} | Considered Websites & Digital Thinking`,
+    template: `%s | ${siteName}`,
   },
-  description:
-    "Elevanta Studio designs and develops premium websites that help businesses establish credibility, attract customers, and grow online.",
+  description: siteDescription,
+  ...(absoluteUrl("/") ? { alternates: { canonical: absoluteUrl("/") } } : {}),
   keywords: [
     "web design studio",
     "premium websites",
     "Next.js development",
     "luxury web design",
     "digital studio",
-    "Elevanta Studio",
+    siteName,
   ],
   authors: [{ name: "Ahmed Abdulsalam" }],
-  creator: "Elevanta Studio",
+  creator: siteName,
   openGraph: {
     type: "website",
     locale: "en_US",
-    title:
-      "Elevanta Studio | Digital Experiences That Elevate Businesses",
-    description:
-      "Premium websites that help ambitious businesses build trust, attract customers, and create lasting impressions.",
-    siteName: "Elevanta Studio",
+    title: `${siteName} | Considered Websites & Digital Thinking`,
+    description: siteDescription,
+    siteName,
+    ...(absoluteUrl("/") ? { url: absoluteUrl("/") } : {}),
   },
   twitter: {
     card: "summary_large_image",
-    title: "Elevanta Studio",
-    description:
-      "Digital experiences that elevate businesses.",
+    title: siteName,
+    description: siteDescription,
   },
   robots: {
-    index: true,
-    follow: true,
+    index: Boolean(siteUrl) && process.env.CONTENT_PREVIEW !== "true",
+    follow: Boolean(siteUrl) && process.env.CONTENT_PREVIEW !== "true",
   },
 };
 
@@ -69,13 +76,12 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Elevanta Studio",
-    description:
-      "Elevanta Studio designs and develops premium websites that help businesses establish credibility, attract customers, and grow online.",
-    email: "ahmednickoliver@gmail.com",
-    telephone: "+2349030759734",
+    name: siteName,
+    description: siteDescription,
+    ...(absoluteUrl("/") ? { url: absoluteUrl("/") } : {}),
+    email: contact.email,
+    telephone: contact.phone,
     founder: { "@type": "Person", name: "Ahmed Abdulsalam" },
-    sameAs: [],
   };
 
   return (
@@ -83,7 +89,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-bg text-white antialiased">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
         <a
           href="#main"
@@ -91,9 +97,11 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Navbar />
-        <main id="main">{children}</main>
-        <Footer />
+        <MotionProvider>
+          <Navbar />
+          <main id="main" tabIndex={-1}>{children}</main>
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );
