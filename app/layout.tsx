@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import { absoluteUrl, serializeJsonLd, siteDescription, siteName, siteUrl } from "@/lib/site";
 import { contact } from "@/lib/data";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = localFont({
   src: [
@@ -101,6 +102,7 @@ export default function RootLayout({
         <MotionProvider>
           <SiteChrome navigation={<Navbar />} footer={<Footer />}>{children}</SiteChrome>
         </MotionProvider>
+        <Analytics />
       </body>
     </html>
   );
