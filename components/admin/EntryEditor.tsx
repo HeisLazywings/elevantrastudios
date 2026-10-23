@@ -66,8 +66,8 @@ function CaseSections({ sections, onChange }: { sections: CaseStudySection[]; on
               <Field label="Section anchor" help="Unique lowercase words separated by hyphens."><input className="cms-input" maxLength={100} value={section.id} onChange={(event) => change(index, { id: event.target.value })} /></Field>
             </div>
             <Field label="Chapter heading"><input className="cms-input" maxLength={300} value={section.title} onChange={(event) => change(index, { title: event.target.value })} /></Field>
-            <Field label="Paragraphs" help="Separate paragraphs with a blank line."><textarea className="cms-input" rows={5} value={section.paragraphs.join("\\n\\n")} onChange={(event) => change(index, { paragraphs: event.target.value.split(/\\n\\s*\\n/).filter(Boolean) })} /></Field>
-            <Field label="Supporting points (optional)" help="One point per line."><textarea className="cms-input" rows={3} value={(section.points || []).join("\\n")} onChange={(event) => change(index, { points: event.target.value.split("\\n").filter(Boolean) })} /></Field>
+            <Field label="Paragraphs" help="Separate paragraphs with a blank line."><textarea className="cms-input" rows={5} value={section.paragraphs.join("\n\n")} onChange={(event) => change(index, { paragraphs: event.target.value.split(/\n\\s*\n/).filter(Boolean) })} /></Field>
+            <Field label="Supporting points (optional)" help="One point per line."><textarea className="cms-input" rows={3} value={(section.points || []).join("\n")} onChange={(event) => change(index, { points: event.target.value.split("\n").filter(Boolean) })} /></Field>
           </div>
         );
       })}
