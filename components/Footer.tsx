@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { contact, socialLinks } from "@/lib/data";
-import { Instagram, Linkedin, Mail, Music2, Phone } from "lucide-react";
+import { Instagram, Mail, Music2, Phone } from "lucide-react";
 import { siteName } from "@/lib/site";
 
 export default function Footer() {
@@ -23,12 +23,7 @@ export default function Footer() {
             </p>
             <div className="mt-8 flex gap-3">
               {[
-                {
-                icon: Linkedin,
-                 href: "https://www.linkedin.com/in/ahmed-abdulsalam-a91449366",
-                label: "Founder LinkedIn",
-                 },
-                 {
+{
                  icon: Instagram,
                 href: socialLinks.instagram,
                 label: "Instagram",
