@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import FinalCTA from "@/components/FinalCTA";
 import { absoluteUrl } from "@/lib/site";
+import { ArrowUpRight, Instagram, Linkedin, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About — Ahmed Abdulsalam",
@@ -15,6 +16,30 @@ export const metadata: Metadata = {
     ...(absoluteUrl("/about") ? { url: absoluteUrl("/about") } : {}),
   },
 };
+
+const founderLinks = [
+  {
+    label: "Personal email",
+    detail: "ahmednickoliver@gmail.com",
+    href: "mailto:ahmednickoliver@gmail.com",
+    icon: Mail,
+    external: false,
+  },
+  {
+    label: "Personal Instagram",
+    detail: "@datguylazywings",
+    href: "https://www.instagram.com/datguylazywings/",
+    icon: Instagram,
+    external: true,
+  },
+  {
+    label: "LinkedIn",
+    detail: "Ahmed Abdulsalam",
+    href: "https://www.linkedin.com/in/ahmed-abdulsalam-a91449366",
+    icon: Linkedin,
+    external: true,
+  },
+] as const;
 
 const values = [
   {
@@ -98,6 +123,34 @@ export default function AboutPage() {
               <div className="mt-10 grid grid-cols-2 gap-6 border-t border-white/10 pt-8">
                 <Stat n="Ahmadu Bello" l="University" />
                 <Stat n="Nigeria" l="Based in" />
+              </div>
+              <div className="mt-10 border-t border-white/10 pt-8">
+                <p className="text-xs uppercase tracking-[0.24em] text-gold">
+                  Connect with the founder
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-white/55">
+                  Personal channels. For projects and official enquiries, please
+                  use Elevantra Studios&apos; contact page.
+                </p>
+                <ul className="mt-5 space-y-2">
+                  {founderLinks.map(({ label, detail, href, icon: Icon, external }) => (
+                    <li key={label}>
+                      <a
+                        href={href}
+                        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="group flex min-h-14 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 transition-colors hover:border-gold/40 hover:bg-gold/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                        aria-label={`${label}: ${detail}`}
+                      >
+                        <Icon size={17} className="shrink-0 text-gold" aria-hidden="true" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-xs text-white/45">{label}</span>
+                          <span className="block break-all text-sm text-white/85">{detail}</span>
+                        </span>
+                        <ArrowUpRight size={15} className="shrink-0 text-white/35 transition-colors group-hover:text-gold" aria-hidden="true" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </Reveal>
