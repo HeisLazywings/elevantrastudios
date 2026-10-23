@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { contact } from "@/lib/data";
-import { Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { contact, socialLinks } from "@/lib/data";
+import { Instagram, Mail, Music2, Phone } from "lucide-react";
 import { siteName } from "@/lib/site";
 
 export default function Footer() {
@@ -23,16 +23,16 @@ export default function Footer() {
             </p>
             <div className="mt-8 flex gap-3">
               {[
-                {
-                icon: Linkedin,
-                 href: "https://www.linkedin.com/in/ahmed-abdulsalam-a91449366",
-                label: "LinkedIn",
-                 },
-                 {
+{
                  icon: Instagram,
-                href: "https://www.instagram.com/datguylazywings",
+                href: socialLinks.instagram,
                 label: "Instagram",
                   },
+                 {
+                  icon: Music2,
+                  href: socialLinks.tiktok,
+                  label: "TikTok",
+                 },
                 ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}

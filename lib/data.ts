@@ -157,6 +157,11 @@ export const techStack = [
 ];
 
 export const contact = {
-  email: "ahmednickoliver@gmail.com",
+  email: "elevantrastudios@gmail.com",
   phone: "+2349030759734",
 };
+
+export const socialLinks = {
+  instagram: "https://www.instagram.com/elevantrastudios/",
+  tiktok: "https://www.tiktok.com/@elevantra.studios",
+} as const;

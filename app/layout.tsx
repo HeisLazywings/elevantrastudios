@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import { absoluteUrl, serializeJsonLd, siteDescription, siteName, siteUrl } from "@/lib/site";
-import { contact } from "@/lib/data";
+import { contact, socialLinks } from "@/lib/data";
 import { Analytics } from "@vercel/analytics/next";
 
 const inter = localFont({
@@ -83,6 +83,7 @@ export default function RootLayout({
     ...(absoluteUrl("/") ? { url: absoluteUrl("/") } : {}),
     email: contact.email,
     telephone: contact.phone,
+    sameAs: [socialLinks.instagram, socialLinks.tiktok],
     founder: { "@type": "Person", name: "Ahmed Abdulsalam" },
   };
 
