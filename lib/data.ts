@@ -77,40 +77,46 @@ export const processSteps = [
   {
     n: "01",
     title: "Discovery",
-    description:
-      "We immerse in your business, audience, and goals to surface the strategy that will drive the work.",
+    description: "We understand your offer, customers, current enquiry journey and constraints before proposing a build.",
+    output: "A documented brief and current-state observations",
+    checkpoint: "Goals, scope and responsibilities confirmed",
   },
   {
     n: "02",
     title: "Strategy",
-    description:
-      "Positioning, narrative, structure, and success metrics — defined before a single pixel is drawn.",
+    description: "We shape the structure, information priorities and the next actions customers should be able to take.",
+    output: "A sitemap, content plan and proposed customer journey",
+    checkpoint: "Structure and success measures agreed",
   },
   {
     n: "03",
     title: "Design",
-    description:
-      "Cinematic, considered, and crafted to your brand — never templated, never generic.",
+    description: "We develop a visual direction and key-page experience for review before extending it across the site.",
+    output: "Key-page designs and interaction direction",
+    checkpoint: "Design direction approved",
   },
   {
     n: "04",
     title: "Development",
-    description:
-      "Premium engineering with Next.js, TypeScript, and modern tooling — built to perform.",
+    description: "We build the agreed functionality and give you a working preview to test with real content.",
+    output: "A staging link and working pages or integrations",
+    checkpoint: "Consolidated feedback and agreed testing",
   },
   {
     n: "05",
     title: "Launch",
-    description:
-      "Quality assurance, performance tuning, and a confident go-live moment.",
+    description: "We verify the agreed experience on real devices, confirm access and obtain approval before going live.",
+    output: "Launch checks and a clear handover plan",
+    checkpoint: "Final approval and agreed payment milestone",
   },
   {
     n: "06",
     title: "Growth",
-    description:
-      "Ongoing optimization, iteration, and partnership beyond launch day.",
+    description: "We hand over the system, review next opportunities and agree any ongoing support separately.",
+    output: "Handover guidance and optional support proposal",
+    checkpoint: "Ownership and support arrangements confirmed",
   },
-];
+] as const;
 
 export const whyChoose = [
   {
