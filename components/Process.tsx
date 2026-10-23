@@ -17,8 +17,14 @@ export default function Process() {
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="heading-display text-[clamp(2.25rem,4.5vw,4rem)]">
-              A refined <span className="italic text-gold-gradient">process.</span>
+              Clarity at <span className="italic text-gold-gradient">every stage.</span>
             </h2>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/60">
+              Here is what you can expect to review at each stage. Specific
+              deliverables, dates and approvals are agreed in your project scope.
+            </p>
           </Reveal>
         </div>
 
@@ -63,6 +69,16 @@ export default function Process() {
                   <p className="mt-3 max-w-md text-sm leading-relaxed text-white/65 md:mt-0">
                     {s.description}
                   </p>
+                  <dl className="mt-6 max-w-md space-y-4 border-t border-white/10 pt-5 text-left">
+                    <div>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-gold">Typical output</dt>
+                      <dd className="mt-2 text-sm leading-relaxed text-white/80">{s.output}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">Review checkpoint</dt>
+                      <dd className="mt-2 text-sm leading-relaxed text-white/70">{s.checkpoint}</dd>
+                    </div>
+                  </dl>
                 </div>
               </motion.li>
             ))}

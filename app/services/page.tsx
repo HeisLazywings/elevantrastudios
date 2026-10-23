@@ -139,6 +139,10 @@ export default function ServicesPage() {
             <h2 className="heading-display mb-16 max-w-3xl text-[clamp(2.25rem,4.5vw,4rem)]">
               How we work.
             </h2>
+            <p className="-mt-10 mb-14 max-w-2xl text-sm leading-relaxed text-white/60">
+              The steps below show our usual working rhythm. Your proposal defines the
+              actual deliverables, dependencies and approval points.
+            </p>
           </Reveal>
           <ol className="grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] md:grid-cols-3">
             {processSteps.map((s) => (
@@ -146,6 +150,16 @@ export default function ServicesPage() {
                 <div className="font-display text-sm text-gold">{s.n}</div>
                 <h3 className="heading-display mt-3 text-2xl">{s.title}</h3>
                 <p className="mt-3 text-sm text-white/65">{s.description}</p>
+                <dl className="mt-6 space-y-4 border-t border-white/10 pt-5">
+                  <div>
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-gold">Typical output</dt>
+                    <dd className="mt-2 text-sm leading-relaxed text-white/75">{s.output}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">Review checkpoint</dt>
+                    <dd className="mt-2 text-sm leading-relaxed text-white/65">{s.checkpoint}</dd>
+                  </div>
+                </dl>
               </li>
             ))}
           </ol>
