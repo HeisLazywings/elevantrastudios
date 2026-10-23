@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowUpRight, Check, Eye, ImagePlus, Plus, Save, Trash2, X } from "lucide-react";
 import type { CaseStudySection, CmsEntry, EntryInput } from "@/lib/cms/types";
+import { caseStudyChapterGuides, evidenceChapterIds, newCaseStudyChapter } from "@/lib/cms/case-study-guides";
 import MediaLibrary, { type MediaItem } from "./MediaLibrary";
 import RichTextEditor from "./RichTextEditor";
 import { apiResult, dateLabel, emptyEntry, entryUrl, inputFromEntry, kindLabels, slugify } from "./model";
@@ -16,24 +17,71 @@ function Field({ label, help, children }: { label: string; help?: string; childr
 }
 
 function CaseSections({ sections, onChange }: { sections: CaseStudySection[]; onChange: (sections: CaseStudySection[]) => void }) {
-  const suggestions = ["context", "challenge", "discovery", "strategy", "solution", "outcomes", "status"];
-  function change(index: number, update: Partial<CaseStudySection>) { onChange(sections.map((section, current) => current === index ? { ...section, ...update } : section)); }
-  function addSection() {
-    const id = suggestions.find((suggestion) => !sections.some((section) => section.id === suggestion)) || `section-${sections.length + 1}`;
-    onChange([...sections, { id, label: id[0].toUpperCase() + id.slice(1), title: "", paragraphs: [], points: [] }]);
+  function change(index: number, update: Partial<CaseStudySection>) {
+    onChange(sections.map((section, current) => current === index ? { ...section, ...update } : section));
   }
-  return <div className="cms-panel-section">
-    <h3 className="cms-panel-title">Case-study chapters</h3>
-    <p className="cms-note" style={{ marginTop: 8, marginBottom: 20 }}>Build the story from context to outcome. Record only confirmed scope and evidence. Leave unconfirmed results out of public copy.</p>
-    {sections.map((section, index) => <div key={index} className="cms-panel" style={{ marginBottom: 16 }}>
-      <div className="cms-actions" style={{ justifyContent: "space-between", marginBottom: 20 }}><span className="cms-eyebrow">Chapter {String(index + 1).padStart(2, "0")}</span><div className="cms-actions"><button type="button" className="cms-button cms-button-secondary cms-button-small" disabled={index === 0} onClick={() => { const next = [...sections]; [next[index - 1], next[index]] = [next[index], next[index - 1]]; onChange(next); }} aria-label={`Move chapter ${index + 1} up`}>Move up</button><button type="button" className="cms-button cms-button-danger cms-button-small" onClick={() => onChange(sections.filter((_, current) => index !== current))}>Remove</button></div></div>
-      <div className="cms-field-row"><Field label="Navigation label"><input className="cms-input" maxLength={100} value={section.label} onChange={(event) => change(index, { label: event.target.value })} /></Field><Field label="Section anchor" help="Unique lowercase words separated by hyphens."><input className="cms-input" maxLength={100} value={section.id} onChange={(event) => change(index, { id: event.target.value })} /></Field></div>
-      <Field label="Chapter heading"><input className="cms-input" maxLength={300} value={section.title} onChange={(event) => change(index, { title: event.target.value })} /></Field>
-      <Field label="Paragraphs" help="Separate paragraphs with a blank line."><textarea className="cms-input" rows={5} value={section.paragraphs.join("\n\n")} onChange={(event) => change(index, { paragraphs: event.target.value.split(/\n\s*\n/) })} /></Field>
-      <Field label="Supporting points (optional)" help="One point per line."><textarea className="cms-input" rows={3} value={(section.points || []).join("\n")} onChange={(event) => change(index, { points: event.target.value.split("\n") })} /></Field>
-    </div>)}
-    <button type="button" className="cms-button cms-button-secondary" onClick={addSection} disabled={sections.length >= 20}><Plus size={15} aria-hidden="true" /> Add chapter</button>
-  </div>;
+
+  function addSection() {
+    if (sections.length >= 20) return;
+    const nextGuide = caseStudyChapterGuides.find((guide) => !sections.some((section) => section.id === guide.id));
+    const fallbackId = `section-${sections.length + 1}`;
+    const id = nextGuide?.id || fallbackId;
+    if (sections.some((section) => section.id === id)) return;
+    onChange([...sections, newCaseStudyChapter(id)]);
+  }
+
+  function addEvidenceChapters() {
+    const missing = evidenceChapterIds.filter((id) => !sections.some((section) => section.id === id));
+    if (!missing.length || sections.length + missing.length > 20) return;
+    onChange([...sections, ...missing.map(newCaseStudyChapter)]);
+  }
+
+  const missingEvidence = evidenceChapterIds.filter((id) => !sections.some((section) => section.id === id));
+
+  return (
+    <div className="cms-panel-section">
+      <h3 className="cms-panel-title">Case-study chapters</h3>
+      <p className="cms-note" style={{ marginTop: 8, marginBottom: 20 }}>
+        Record decisions, evidence and limits alongside the work. These prompts do not
+        insert results or client information. Keep unapproved details private.
+      </p>
+      {sections.map((section, index) => {
+        const guidance = caseStudyChapterGuides.find((guide) => guide.id === section.id)?.prompt;
+        return (
+          <div key={section.id} className="cms-panel" style={{ marginBottom: 16 }}>
+            <div className="cms-actions" style={{ justifyContent: "space-between", marginBottom: 20 }}>
+              <span className="cms-eyebrow">Chapter {String(index + 1).padStart(2, "0")}</span>
+              <div className="cms-actions">
+                <button type="button" className="cms-button cms-button-secondary cms-button-small" disabled={index === 0} onClick={() => {
+                  const next = [...sections];
+                  [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                  onChange(next);
+                }} aria-label={`Move chapter ${index + 1} up`}>Move up</button>
+                <button type="button" className="cms-button cms-button-danger cms-button-small" onClick={() => onChange(sections.filter((_, current) => index !== current))}>Remove</button>
+              </div>
+            </div>
+            {guidance && <p className="cms-note" style={{ marginBottom: 18 }}>{guidance}</p>}
+            <div className="cms-field-row">
+              <Field label="Navigation label"><input className="cms-input" maxLength={100} value={section.label} onChange={(event) => change(index, { label: event.target.value })} /></Field>
+              <Field label="Section anchor" help="Unique lowercase words separated by hyphens."><input className="cms-input" maxLength={100} value={section.id} onChange={(event) => change(index, { id: event.target.value })} /></Field>
+            </div>
+            <Field label="Chapter heading"><input className="cms-input" maxLength={300} value={section.title} onChange={(event) => change(index, { title: event.target.value })} /></Field>
+            <Field label="Paragraphs" help="Separate paragraphs with a blank line."><textarea className="cms-input" rows={5} value={section.paragraphs.join("\\n\\n")} onChange={(event) => change(index, { paragraphs: event.target.value.split(/\\n\\s*\\n/).filter(Boolean) })} /></Field>
+            <Field label="Supporting points (optional)" help="One point per line."><textarea className="cms-input" rows={3} value={(section.points || []).join("\\n")} onChange={(event) => change(index, { points: event.target.value.split("\\n").filter(Boolean) })} /></Field>
+          </div>
+        );
+      })}
+      <div className="cms-actions">
+        <button type="button" className="cms-button cms-button-secondary" onClick={addSection} disabled={sections.length >= 20}>
+          <Plus size={15} aria-hidden="true" /> Add guided chapter
+        </button>
+        <button type="button" className="cms-button cms-button-secondary" onClick={addEvidenceChapters} disabled={!missingEvidence.length || sections.length + missingEvidence.length > 20}>
+          <Plus size={15} aria-hidden="true" /> Add missing evidence chapters
+        </button>
+      </div>
+      <p className="cms-field-help">Fill in a heading for every chapter you add before saving. No database migration is required.</p>
+    </div>
+  );
 }
 
 export default function EntryEditor({ initialEntry, kind = "article" }: { initialEntry?: CmsEntry; kind?: EntryInput["kind"] }) {
