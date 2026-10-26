@@ -6,8 +6,8 @@ export default function TechStack() {
   const items = [...techStack, ...techStack];
   return (
     <section className="relative overflow-hidden border-y border-white/5 bg-bg-secondary/40 py-14">
-      <p className="container-x mb-8 text-center text-xs uppercase tracking-[0.35em] text-white/40">
-        Trusted technology stack
+      <p className="container-x mb-8 text-center text-xs uppercase tracking-[0.35em] text-white/55">
+        Tools we work with · selected to fit the scope
       </p>
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-bg to-transparent" />

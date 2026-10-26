@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import { absoluteUrl, serializeJsonLd, siteDescription, siteName, siteUrl } from "@/lib/site";
 import { contact, socialLinks } from "@/lib/data";
-import { Analytics } from "@vercel/analytics/next";
+import PublicAnalytics from "@/components/PublicAnalytics";
 
 const inter = localFont({
   src: [
@@ -36,17 +36,17 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   ...(siteUrl ? { metadataBase: siteUrl } : {}),
   title: {
-    default: `${siteName} | Considered Websites & Digital Thinking`,
+    default: `${siteName} | Commercial Systems & Digital Growth`,
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
   ...(absoluteUrl("/") ? { alternates: { canonical: absoluteUrl("/") } } : {}),
   keywords: [
-    "web design studio",
-    "premium websites",
-    "Next.js development",
-    "luxury web design",
-    "digital studio",
+    "commercial systems",
+    "digital experiences",
+    "business websites",
+    "customer enquiry workflows",
+    "digital studio Nigeria",
     siteName,
   ],
   authors: [{ name: "Ahmed Abdulsalam" }],
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: `${siteName} | Considered Websites & Digital Thinking`,
+    title: `${siteName} | Commercial Systems & Digital Growth`,
     description: siteDescription,
     siteName,
     ...(absoluteUrl("/") ? { url: absoluteUrl("/") } : {}),
@@ -81,6 +81,7 @@ export default function RootLayout({
     name: siteName,
     description: siteDescription,
     ...(absoluteUrl("/") ? { url: absoluteUrl("/") } : {}),
+    ...(absoluteUrl("/brand/keystone-stacked-ink.svg") ? { logo: absoluteUrl("/brand/keystone-stacked-ink.svg") } : {}),
     email: contact.email,
     telephone: contact.phone,
     sameAs: [socialLinks.instagram, socialLinks.tiktok],
@@ -103,7 +104,7 @@ export default function RootLayout({
         <MotionProvider>
           <SiteChrome navigation={<Navbar />} footer={<Footer />}>{children}</SiteChrome>
         </MotionProvider>
-        <Analytics />
+        <PublicAnalytics enabled={process.env.CONTENT_PREVIEW !== "true"} />
       </body>
     </html>
   );

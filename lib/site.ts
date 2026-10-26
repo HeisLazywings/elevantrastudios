@@ -1,10 +1,12 @@
 export const siteName = "Elevantra Studios";
 
 export const siteDescription =
-  "Elevantra Studios is an independent digital studio in Nigeria, creating considered websites and sharing practical thinking on trust, customer journeys, and business on the web.";
+  "Elevantra Studios works with established businesses to understand commercial friction and develop practical digital experiences and systems around what matters.";
+
+export const sitePositioning = "Commercial Systems & Digital Growth Studio";
 
 function configuredSiteUrl(): URL | undefined {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://elevantrastudios.vercel.app";
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.elevantrastudios.com.ng";
 
   try {
     const url = new URL(configured);

@@ -79,7 +79,7 @@ Create an ignored `.env.local` for local development. Put the same applicable se
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL, such as `https://YOUR-PROJECT-REF.supabase.co`. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | The project's publishable API key. A legacy anonymous key is also supported through `NEXT_PUBLIC_SUPABASE_ANON_KEY` when the publishable variable is absent. |
-| `NEXT_PUBLIC_SITE_URL` | `https://elevantrastudios.vercel.app`, the confirmed canonical production origin. This is also the default. Change it when a custom domain is established. |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.elevantrastudios.com.ng`, the confirmed canonical production origin and current default. Override and rebuild if the production domain changes. |
 | `CMS_CONTENT_ENABLED` | Set to the exact value `true` to make the public website read published CMS content. Keep unset while preparing the migration/import if the existing local editorial content should remain visible. This is a server setting, without a `NEXT_PUBLIC_` prefix. |
 
 The project URL and publishable/anonymous key are intended for public clients. Database and Storage RLS enforce access; these keys do not make someone an administrator. **Never use a `service_role` key, `sb_secret_...` key or database password in a `NEXT_PUBLIC_*` variable. The application does not need a service-role key.**
