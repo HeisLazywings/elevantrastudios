@@ -6,14 +6,14 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Contact — Start a Project",
+  title: "Contact — Discuss Your Business",
   description:
-    "Tell Elevantra Studios about your business, your goals, and the website you have in mind.",
+    "Discuss your business objective, customer journey or practical system with Elevantra Studios. Tell us what you are trying to improve.",
   ...(absoluteUrl("/contact") ? { alternates: { canonical: absoluteUrl("/contact") } } : {}),
   openGraph: {
     title: "Contact Elevantra Studios",
     description:
-      "Start a conversation about a considered website for your business.",
+      "Start a conversation about your business objective and the process you want to improve.",
     ...(absoluteUrl("/contact") ? { url: absoluteUrl("/contact") } : {}),
   },
 };
@@ -31,14 +31,12 @@ export default function ContactPage() {
             </Reveal>
             <Reveal delay={0.1}>
               <h1 className="heading-display text-[clamp(2.5rem,6vw,5.5rem)]">
-                Let&rsquo;s build something{" "}
-                <span className="italic text-gold-gradient">exceptional.</span>
+                What are you trying to <span className="italic text-gold-light">improve?</span>
               </h1>
             </Reveal>
             <Reveal delay={0.2}>
               <p className="mt-8 max-w-md text-lg text-white/70">
-                Tell us about your business, your goals, and the experience you
-                want to create. We&rsquo;ll review your enquiry and discuss the next steps.
+                Tell us about your business, the objective you are working toward and what is getting in the way. We’ll review the fit with our capabilities and discuss a sensible next step.
               </p>
             </Reveal>
 
@@ -59,7 +57,7 @@ export default function ContactPage() {
                 <ContactItem
                   icon={<MapPin size={18} />}
                   label="Based"
-                  value="Nigeria · Working globally"
+                  value="Nigeria · Remote collaboration"
                 />
               </ul>
             </Reveal>
@@ -93,7 +91,7 @@ function ContactItem({
         {icon}
       </span>
       <div>
-        <div className="text-xs uppercase tracking-[0.25em] text-white/40">
+        <div className="text-xs uppercase tracking-[0.25em] text-white/55">
           {label}
         </div>
         <div className="text-base text-white">{value}</div>

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { ArrowUpRight, Files, ImageIcon, LogOut } from "lucide-react";
 import "./admin.css";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function AdminShell({ children, email }: { children: ReactNode; email?: string }) {
   const pathname = usePathname();
@@ -32,7 +33,7 @@ export default function AdminShell({ children, email }: { children: ReactNode; e
       <header className="cms-header">
         <div className="cms-header-inner">
           <Link href="/admin" className="cms-brand" aria-label="Elevantra Studios dashboard">
-            <span className="cms-brand-mark" aria-hidden="true">E.</span>
+            <BrandLogo variant="symbol" decorative />
             <span className="cms-brand-name">Elevantra Studios<span>Private editorial desk</span></span>
           </Link>
           <nav className="cms-nav" aria-label="Administration">

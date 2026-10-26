@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
   const routes = [
     "", "/about", "/services", "/work", "/contact", "/insights", "/resources", "/clients",
+    "/commercial-challenges", "/approach", "/who-we-work-with",
     ...articles.map(({ slug }) => `/insights/${slug}`),
     ...projects.map(({ slug }) => `/work/${slug}`),
     ...additional.filter((entry) => entry.kind === "resource" || entry.kind === "client").map((entry) => `/${entry.kind === "resource" ? "resources" : "clients"}/${entry.slug}`),

@@ -1,52 +1,27 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import Reveal from "./Reveal";
 
 export default function AboutSection() {
   return (
-    <section className="relative py-32">
-      <div className="container-x grid gap-16 lg:grid-cols-12">
-        <div className="lg:col-span-5">
-          <Reveal>
-            <p className="mb-6 text-xs uppercase tracking-[0.35em] text-gold">
-              About Elevantra Studios
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="heading-display text-[clamp(2.25rem,4.5vw,4rem)]">
-              Designed for businesses that refuse to look{" "}
-              <span className="italic text-gold-gradient">ordinary.</span>
-            </h2>
-          </Reveal>
-        </div>
-        <div className="lg:col-span-6 lg:col-start-7">
-          <Reveal delay={0.2}>
-            <p className="text-lg leading-relaxed text-white/70">
-              Elevantra Studios creates digital experiences that blend design,
-              performance, and strategy. Every website is crafted to help
-              businesses build credibility, attract customers, and stand
-              apart in competitive markets.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <div className="mt-12 grid grid-cols-2 gap-8 border-t border-white/10 pt-10">
-              <Capability title="Strategy" detail="A clear purpose for every page" />
-              <Capability title="Design" detail="A considered visual language" />
-              <Capability title="Development" detail="Responsive, accessible foundations" />
-              <Capability title="Care" detail="Room to maintain and evolve" />
-            </div>
-          </Reveal>
-        </div>
+    <section id="business-first" aria-labelledby="business-first-title" className="py-20 md:py-28">
+      <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <Reveal className="lg:col-span-6">
+          <p className="eyebrow mb-6">The business comes first</p>
+          <h2 id="business-first-title" className="heading-display max-w-[20ch] text-[clamp(2.25rem,4.2vw,4rem)] leading-[1.12]">
+            A website is one possible answer.
+          </h2>
+          <p className="mt-5 font-display text-2xl leading-snug text-gold-light md:text-3xl">Understanding the problem comes before choosing the tool.</p>
+        </Reveal>
+        <Reveal delay={0.1} className="lg:col-span-6">
+          <div className="reading-copy">
+            <p>A customer may need clearer product information. An enquiry may need a better handoff. A sales team may need a dependable way to organise inspection requests.</p>
+            <p>Each calls for a different response. We bring design and development into the discussion after establishing the objective, the constraints and the part of the process worth improving.</p>
+            <p>Sometimes that means a new website or a practical business tool. Sometimes a clearer process is the appropriate first step.</p>
+          </div>
+          <Link href="/commercial-challenges" className="text-link mt-8">Explore commercial challenges <ArrowUpRight size={16} aria-hidden="true" /></Link>
+        </Reveal>
       </div>
     </section>
-  );
-}
-
-function Capability({ title, detail }: { title: string; detail: string }) {
-  return (
-    <div>
-      <div className="font-display text-2xl text-gold-light">
-        {title}
-      </div>
-      <div className="mt-2 text-sm leading-relaxed text-white/60">{detail}</div>
-    </div>
   );
 }

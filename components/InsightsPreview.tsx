@@ -34,7 +34,7 @@ export default async function InsightsPreview() {
             </article>
           </Reveal>
           <div className="lg:col-span-5 lg:col-start-8">
-            <p className="mb-6 max-w-sm text-base leading-relaxed text-white/60">Practical thinking on the decisions that make a website useful to a business, and clear to its customers.</p>
+            <p className="mb-6 max-w-sm text-base leading-relaxed text-white/60">Practical thinking on customer information, enquiry journeys and the decisions behind useful digital systems.</p>
             {rest.map((article) => (
               <article key={article.slug} className="section-rule group py-8">
                 <Link href={`/insights/${article.slug}`} className="block">

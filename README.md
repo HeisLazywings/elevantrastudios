@@ -23,7 +23,7 @@ Set variables in `.env.local` locally and in Vercel project settings. Never comm
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical origin; defaults to the confirmed `https://elevantrastudios.vercel.app`. Set to a future custom domain and rebuild. |
+| `NEXT_PUBLIC_SITE_URL` | Canonical origin; defaults to `https://www.elevantrastudios.com.ng`. Override and rebuild if the production domain changes. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Existing contact integration's Supabase project URL. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key; never use a service-role key. |
 | `RESEND_API_KEY` | Server-only email notification key. |
@@ -33,6 +33,8 @@ Set variables in `.env.local` locally and in Vercel project settings. Never comm
 Without Supabase settings, the contact page offers email rather than crashing. With settings, the existing `contact_submissions` insert remains first, followed by the email notification. Configure the table's intended insert policy and provider sender permissions in Supabase/Resend. No schema or credentials for that existing integration are provisioned by this redesign.
 
 ## Content
+
+The public site positions the studio around commercial objectives and practical digital systems. The three strategy pages are `/commercial-challenges`, `/approach`, and `/who-we-work-with`; they complement the existing Services, Work, About and editorial routes. See [the implementation map](docs/STRATEGIC_EVOLUTION.md) and [Keystone asset assignments](docs/BRAND_ASSETS.md).
 
 - `lib/insights.ts`: typed articles, section anchors, categories, featured selection, and reading times. Add content here without changing page layouts.
 - `lib/projects.ts`: approved public studies, typed sections, status, and optional screenshots. Real screenshots use local `/public` asset paths with accurate dimensions, alt text, and captions. Supplied artwork is explicitly labelled as a design study.

@@ -1,75 +1,67 @@
 export const services = [
   {
-    title: "Website Development",
+    id: "digital-presence",
+    title: "Digital Presence & Credibility",
     description:
-      "Custom websites designed to establish credibility, improve user experience, and support business growth.",
+      "Websites and digital experiences that help customers understand your business, assess your offer and decide whether to take the next step.",
     deliverables: [
-      "Discovery & strategy workshop",
-      "Custom UI design system",
-      "Responsive front-end build",
-      "CMS integration",
-      "Launch & handover",
+      "Discovery workshop, content priorities & brand consultation",
+      "Corporate websites, professional portfolios & brand presentation",
+      "Custom UI design systems & responsive front-end builds",
+      "Editorial layouts, case-study templates & SEO foundations",
+      "CMS integration for manageable content",
+      "Online stores with storefronts, product pages, carts, payments & inventory / order flows",
+      "Launch checks, access transfer & practical handover",
     ],
+    scopeNote:
+      "The agreed brief defines the pages, content responsibilities, integrations and handover your project needs.",
   },
   {
-    title: "Landing Pages",
+    id: "enquiry-conversion",
+    title: "Customer Enquiry & Conversion Systems",
     description:
-      "Focused landing pages that connect campaign messages, product information, and a clear next step.",
+      "Clear product information and structured customer journeys that support the path from initial interest to a useful enquiry, appointment or purchase.",
     deliverables: [
-      "Conversion-focused copy direction",
-      "Bespoke hero & section design",
-      "A/B-ready structure",
-      "Analytics & event tracking",
-      "Speed & SEO tuning",
+      "Digital catalogues, showroom experiences & product information",
+      "Campaign landing pages with conversion-focused copy direction",
+      "Bespoke landing-page heroes, sections & A/B-ready structures",
+      "Contact and enquiry flows that collect relevant customer context",
+      "Quotation and appointment processes where appropriate",
+      "Agreed analytics, event tracking, speed & SEO tuning",
     ],
+    scopeNote:
+      "We examine the current enquiry journey before proposing changes. Measurement depends on agreed events, suitable tools and the information available.",
   },
   {
-    title: "Portfolio Websites",
+    id: "business-tools",
+    title: "Custom Business Tools",
     description:
-      "Personal brand and professional portfolio websites that showcase expertise and attract opportunities.",
+      "Focused software for a recurring task or information gap, scoped around the people who will use it and the practical improvement it should support.",
     deliverables: [
-      "Personal brand consultation",
-      "Editorial layout design",
-      "Case study templates",
-      "Contact & inquiry flow",
-      "SEO foundation",
+      "Workflow mapping, requirements & technical feasibility checks",
+      "Lightweight dashboards and operational applications for agreed needs",
+      "Tools for customer information, enquiry records & follow-up where suitable",
+      "Booking or quotation tools with specifically agreed integrations",
+      "Appropriate access controls, user guidance & handover",
     ],
+    scopeNote:
+      "These are possible applications, subject to a clear brief and a confirmed fit with our capabilities. A simpler process change may be sufficient.",
   },
   {
-    title: "E-Commerce Websites",
+    id: "ongoing-support",
+    title: "Ongoing Support & Improvement",
     description:
-      "Modern online stores built for seamless shopping experiences and scalable growth.",
+      "Clearly scoped maintenance, technical support and improvements for clients who need help keeping an existing website or system useful after launch.",
     deliverables: [
-      "Storefront design system",
-      "Product & cart experience",
-      "Payment integration",
-      "Inventory & order flow",
-      "Performance tuning",
+      "Scheduled updates, patches, uptime checks & security monitoring",
+      "Automated backups and agreed recovery checks",
+      "Content updates, CMS support & agreed support priorities",
+      "Core Web Vitals audits, image & asset optimisation",
+      "Technical SEO fixes, caching & CDN review",
+      "Performance reports and prioritised usability improvements",
     ],
-  },
-  {
-    title: "Website Maintenance",
-    description:
-      "Ongoing updates, optimization, security monitoring, backups, and technical support.",
-    deliverables: [
-      "Monthly updates & patches",
-      "Uptime & security monitoring",
-      "Automated backups",
-      "Content updates",
-      "Priority support",
-    ],
-  },
-  {
-    title: "Performance Optimization",
-    description:
-      "Speed improvements, technical SEO enhancements, and user experience optimization.",
-    deliverables: [
-      "Core Web Vitals audit",
-      "Image & asset optimization",
-      "Technical SEO fixes",
-      "Caching & CDN strategy",
-      "Detailed performance report",
-    ],
+    scopeNote:
+      "Support is optional and agreed separately. A complete project handover does not require a maintenance contract; schedules and response commitments depend on the agreed scope.",
   },
 ];
 
@@ -120,34 +112,20 @@ export const processSteps = [
 
 export const whyChoose = [
   {
-    title: "Strategy First",
-    description:
-      "Every project begins with positioning and business outcomes — not aesthetics alone.",
+    title: "A defined objective",
+    description: "Establish what the business wants to improve and which evidence is needed before recommending an intervention.",
   },
   {
-    title: "Performance Focused",
-    description:
-      "Engineered for Core Web Vitals, SEO, and conversion from the first line of code.",
+    title: "A proportionate scope",
+    description: "Agree deliverables, responsibilities, constraints and acceptance criteria. The complexity should match the problem.",
   },
   {
-    title: "Mobile Optimized",
-    description:
-      "Designed mobile-first for the device most of your customers will use.",
+    title: "Visible review points",
+    description: "Review the work against the agreed brief, with an honest distinction between what is observed and what remains unproven.",
   },
   {
-    title: "Premium Design",
-    description:
-      "Considered typography, bespoke layouts, and restrained motion across every section.",
-  },
-  {
-    title: "SEO Ready",
-    description:
-      "Technical SEO, semantic HTML, structured data, and metadata done right from launch.",
-  },
-  {
-    title: "Long-Term Support",
-    description:
-      "We stay with you after launch — maintenance, iteration, and ongoing growth.",
+    title: "A clear handover",
+    description: "Confirm ownership, access and the guidance needed to use the deliverable. Support and further improvement are agreed where useful.",
   },
 ];
 

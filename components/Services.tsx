@@ -1,61 +1,31 @@
-"use client";
-
+import Link from "next/link";
 import { services } from "@/lib/data";
 import Reveal from "./Reveal";
 import { ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
 
 export default function Services() {
-  const reduce = useReducedMotion();
   return (
-    <section className="relative py-32">
+    <section aria-labelledby="services-preview-title" className="border-y border-white/10 bg-bg-secondary/40 py-20 md:py-28">
       <div className="container-x">
-        <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <Reveal>
-              <p className="mb-4 text-xs uppercase tracking-[0.35em] text-gold">
-                Services
-              </p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="heading-display max-w-[14ch] text-[clamp(2.25rem,4.5vw,4rem)]">
-                Crafted services for ambitious brands.
-              </h2>
-            </Reveal>
-          </div>
+        <div className="mb-12 grid gap-8 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-7">
+            <p className="eyebrow mb-5">Practical implementation</p>
+            <h2 id="services-preview-title" className="heading-display max-w-[20ch] text-[clamp(2.25rem,4.5vw,4rem)] leading-[1.1]">The objective shapes the deliverable.</h2>
+          </Reveal>
+          <Reveal delay={0.1} className="lg:col-span-5 lg:self-end">
+            <p className="text-base leading-relaxed text-white/65">Clearer customer information, better enquiry handling and more organised workflows are useful starting objectives. Websites, showrooms and tools are possible ways to address them.</p>
+            <Link href="/services" className="text-link mt-5">Explore our capabilities <ArrowUpRight size={16} aria-hidden="true" /></Link>
+          </Reveal>
         </div>
-
-        <div className="grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <motion.article
-              key={s.title}
-              initial={reduce ? false : { opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                duration: 0.7,
-                delay: (i % 3) * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="group relative bg-bg p-10 transition-colors duration-500 hover:bg-bg-secondary"
-            >
-              <div className="mb-10 flex items-center justify-between">
-                <span className="font-display text-sm text-white/40">
-                  0{i + 1}
-                </span>
-                <ArrowUpRight
-                  size={20}
-                  className="text-white/30 transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-gold"
-                />
-              </div>
-              <h3 className="heading-display mb-4 text-2xl md:text-3xl">
-                {s.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-white/60">
-                {s.description}
-              </p>
-              <div className="mt-10 h-px w-full origin-left scale-x-0 bg-gold-gradient transition-transform duration-700 group-hover:scale-x-100" />
-            </motion.article>
+        <div className="border-t border-white/15">
+          {services.map((service, index) => (
+            <Reveal key={service.id}>
+              <article className="group grid gap-5 border-b border-white/15 py-7 transition-colors md:grid-cols-12 md:gap-8 md:py-9">
+                <span aria-hidden="true" className="text-[11px] tracking-[0.15em] text-gold md:col-span-1">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="font-display text-2xl leading-tight md:col-span-5 md:text-3xl"><Link href={"/services#" + service.id} className="transition-colors hover:text-gold-light">{service.title}</Link></h3>
+                <p className="max-w-xl text-sm leading-[1.8] text-white/65 md:col-span-6">{service.description}</p>
+              </article>
+            </Reveal>
           ))}
         </div>
       </div>

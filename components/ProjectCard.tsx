@@ -24,7 +24,7 @@ export default function ProjectCard({
         </Link>
       </div>
       <div className="flex flex-col items-start lg:col-span-5 lg:py-6">
-        <div className="mb-8 flex w-full items-center justify-between gap-4 text-[10px] uppercase tracking-[0.22em] text-white/45">
+        <div className="mb-8 flex w-full items-center justify-between gap-4 text-[10px] uppercase tracking-[0.22em] text-white/55">
           <span>Study {String(index + 1).padStart(2, "0")}</span>
           <span className="border border-gold/30 px-3 py-2 text-right text-gold">{project.designation}</span>
         </div>
@@ -35,12 +35,12 @@ export default function ProjectCard({
           </Link>
         </Heading>
         <p className="mt-6 max-w-md text-base leading-relaxed text-white/65">{project.summary}</p>
-        <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/45" aria-label="Project focus">
+        <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/55" aria-label="Project focus">
           {project.focus.map((focus) => <li key={focus}>{focus}</li>)}
         </ul>
         <div className="mt-10 border-t border-white/10 pt-5 lg:mt-auto lg:w-full lg:pt-6">
           <Link href={`/work/${project.slug}`} className="text-link text-sm text-gold">
-            {project.visibility === "review" ? "Review draft" : "Explore the design study"}
+            {project.visibility === "review" ? "Review draft" : project.designation === "Concept Demonstration" ? "Explore the concept" : "Explore the case study"}
             <ArrowUpRight aria-hidden="true" size={16} />
           </Link>
         </div>

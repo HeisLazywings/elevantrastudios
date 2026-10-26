@@ -14,8 +14,9 @@ export default async function FeaturedWork() {
           <Reveal className="lg:col-span-8">
             <p className="eyebrow mb-5">Selected work</p>
             <h2 id="featured-work-title" className="heading-display max-w-[17ch] text-[clamp(2.5rem,5vw,4.8rem)] leading-[1.05]">
-              The thinking behind the experience.
+              Work you can examine.
             </h2>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-white/65">Project context, implementation choices and the boundaries of what can be verified. Each study makes its status clear.</p>
           </Reveal>
           <Reveal className="lg:col-span-4 lg:justify-self-end">
             <Link href="/work" className="text-link text-sm text-white/65 hover:text-white">

@@ -1,89 +1,39 @@
-"use client";
-
-import { processSteps } from "@/lib/data";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import Reveal from "./Reveal";
-import { motion, useReducedMotion } from "framer-motion";
+
+const stages = [
+  { title: "Understand", description: "Agree the objective, examine the current process and separate evidence from assumptions." },
+  { title: "Implement", description: "Define a proportionate scope, then design and build the agreed intervention." },
+  { title: "Measure", description: "Review the indicators agreed for the work, with clear limits on what can be attributed to it." },
+  { title: "Improve", description: "Use what is learned to decide whether a handover, support or further work makes sense." },
+];
 
 export default function Process() {
-  const reduce = useReducedMotion();
   return (
-    <section className="relative overflow-hidden bg-bg-secondary/40 py-32">
+    <section className="bg-bg-secondary/40 py-20 md:py-28" aria-labelledby="approach-preview-title">
       <div className="container-x">
-        <div className="mb-20 max-w-3xl">
-          <Reveal>
-            <p className="mb-4 text-xs uppercase tracking-[0.35em] text-gold">
-              Process
-            </p>
+        <div className="mb-12 grid gap-8 lg:grid-cols-12 lg:gap-16">
+          <Reveal className="lg:col-span-7">
+            <p className="eyebrow mb-5">Our approach</p>
+            <h2 id="approach-preview-title" className="heading-display max-w-[20ch] text-[clamp(2.25rem,4.3vw,4rem)] leading-[1.12]">A considered path from question to implementation.</h2>
           </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="heading-display text-[clamp(2.25rem,4.5vw,4rem)]">
-              Clarity at <span className="italic text-gold-gradient">every stage.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/60">
-              Here is what you can expect to review at each stage. Specific
-              deliverables, dates and approvals are agreed in your project scope.
-            </p>
+          <Reveal delay={0.1} className="lg:col-span-5 lg:self-end">
+            <p className="text-base leading-relaxed text-white/65">This is the operating philosophy we are developing. The proposal for each engagement defines its actual scope, review points and measures of success.</p>
+            <Link href="/approach" className="text-link mt-5">See the full approach <ArrowUpRight size={16} aria-hidden="true" /></Link>
           </Reveal>
         </div>
-
-        <div className="relative">
-          <div
-            className="absolute left-[26px] top-2 bottom-2 w-px bg-gradient-to-b from-gold/40 via-white/10 to-transparent md:left-1/2 md:-translate-x-1/2"
-            aria-hidden
-          />
-          <ol className="space-y-16">
-            {processSteps.map((s, i) => (
-              <motion.li
-                key={s.n}
-                initial={reduce ? false : { opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className={`relative grid items-center gap-6 md:grid-cols-2 ${
-                  i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
-                }`}
-              >
-                <div
-                  className={`flex items-center gap-5 md:px-10 ${
-                    i % 2 === 1 ? "md:justify-start" : "md:justify-end md:text-right"
-                  }`}
-                >
-                  <div className="hidden md:block">
-                    <div className="font-display text-sm text-gold">{s.n}</div>
-                    <h3 className="heading-display mt-1 text-3xl">{s.title}</h3>
-                  </div>
-                </div>
-
-                <div className="relative pl-16 md:px-10 md:pl-10">
-                  <span
-                    className="absolute left-0 top-1 grid h-[52px] w-[52px] place-items-center rounded-full border border-gold/40 bg-bg text-sm text-gold md:left-1/2 md:-translate-x-1/2"
-                    aria-hidden
-                  >
-                    {s.n}
-                  </span>
-                  <div className="md:hidden">
-                    <h3 className="heading-display text-2xl">{s.title}</h3>
-                  </div>
-                  <p className="mt-3 max-w-md text-sm leading-relaxed text-white/65 md:mt-0">
-                    {s.description}
-                  </p>
-                  <dl className="mt-6 max-w-md space-y-4 border-t border-white/10 pt-5 text-left">
-                    <div>
-                      <dt className="text-[10px] uppercase tracking-[0.2em] text-gold">Typical output</dt>
-                      <dd className="mt-2 text-sm leading-relaxed text-white/80">{s.output}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">Review checkpoint</dt>
-                      <dd className="mt-2 text-sm leading-relaxed text-white/70">{s.checkpoint}</dd>
-                    </div>
-                  </dl>
-                </div>
-              </motion.li>
-            ))}
-          </ol>
-        </div>
+        <ol className="grid border-t border-white/15 sm:grid-cols-2 lg:grid-cols-4">
+          {stages.map((stage, index) => (
+            <li key={stage.title} className="min-w-0 border-b border-white/15 py-7 sm:px-5 lg:border-b-0 lg:border-r lg:last:border-r-0">
+              <Reveal delay={index * 0.04}>
+                <span aria-hidden="true" className="text-[11px] tracking-[0.15em] text-gold">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="mt-5 font-display text-3xl">{stage.title}</h3>
+                <p className="mt-4 text-sm leading-[1.8] text-white/65">{stage.description}</p>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

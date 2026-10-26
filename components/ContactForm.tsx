@@ -67,10 +67,10 @@ export default function ContactForm() {
     return (
       <div className="glass rounded-3xl p-8 md:p-12">
         <p className="text-xs uppercase tracking-[0.25em] text-gold">Start a conversation</p>
-        <h2 className="heading-display mt-6 text-3xl md:text-4xl">Tell us what you have in mind.</h2>
+        <h2 className="heading-display mt-6 text-3xl md:text-4xl">Tell us what you’re trying to improve.</h2>
         <p className="mt-6 leading-relaxed text-white/70">
           The enquiry form is currently unavailable. Email us with a little about
-          your business, your goals, and the project you are considering.
+          your business, the objective you are working toward, and what is getting in the way.
         </p>
         <a href={`mailto:${contact.email}`} className="mt-8 inline-flex min-h-11 break-all text-gold-light underline underline-offset-4">
           {contact.email}
@@ -116,7 +116,7 @@ export default function ContactForm() {
       <div className="grid gap-6 md:grid-cols-2">
         <Field label="Company" name="company" autoComplete="organization" maxLength={200} />
         <Select
-          label="Budget"
+          label="Indicative budget (optional)"
           name="budget"
           options={[
             "₦150,000 – ₦299,000",
@@ -128,7 +128,11 @@ export default function ContactForm() {
           ]}
         />
       </div>
-      <Field label="Tell us about your project" name="message" textarea maxLength={5000} required />
+      <div>
+        <Field label="Business objective & current challenge" name="message" textarea maxLength={5000} required describedBy="enquiry-message-help" />
+        <p id="enquiry-message-help" className="mt-3 text-sm leading-relaxed text-white/55">A few sentences are enough: what your business does, what you want to improve, what is getting in the way and anything you have already tried. Please leave out confidential customer records.</p>
+      </div>
+      <p className="text-xs leading-relaxed text-white/55">The first conversation establishes relevance and scope. Any investigation or implementation is agreed separately.</p>
       {error && <p role="alert" className="text-sm leading-relaxed text-gold-light">{error}</p>}
       <button
         type="submit"
@@ -141,7 +145,7 @@ export default function ContactForm() {
   );
 }
 
-function Field({ label, name, type = "text", required, textarea, autoComplete, maxLength }: {
+function Field({ label, name, type = "text", required, textarea, autoComplete, maxLength, describedBy }: {
   label: string;
   name: string;
   type?: string;
@@ -149,6 +153,7 @@ function Field({ label, name, type = "text", required, textarea, autoComplete, m
   textarea?: boolean;
   autoComplete?: string;
   maxLength?: number;
+  describedBy?: string;
 }) {
   const className = "w-full rounded-xl border border-white/10 bg-bg-secondary/60 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-gold/50 focus:outline-none";
 
@@ -158,7 +163,7 @@ function Field({ label, name, type = "text", required, textarea, autoComplete, m
         {label}{required && <span className="ml-1 text-gold">*</span>}
       </span>
       {textarea ? (
-        <textarea name={name} required={required} maxLength={maxLength} rows={5} className={className} />
+        <textarea name={name} required={required} maxLength={maxLength} rows={6} aria-describedby={describedBy} className={className} />
       ) : (
         <input type={type} name={name} required={required} autoComplete={autoComplete} maxLength={maxLength} className={className} />
       )}
