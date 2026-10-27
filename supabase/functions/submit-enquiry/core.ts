@@ -106,6 +106,79 @@ async function readJson(request: Request, timeoutMs: number): Promise<unknown> {
   } finally { clearTimeout(timer); }
 }
 
+/** Protected, read-only configuration probe. It neither stores an enquiry nor sends mail. */
+async function enquiryReadiness(dependencies: Dependencies) {
+  const config = dependencies.config;
+  const key = config.resendApiKey?.trim() || "";
+  const from = config.from?.trim() || "";
+  const senderAddress = /<([^<>]+)>$/.exec(from)?.[1] || from;
+  const validSender = emailPattern.test(senderAddress) && from.length <= 320 &&
+    !/[\r\n]/.test(from) && !/@(?:[^@]*\.)?resend\.dev$/i.test(senderAddress);
+  const configuration = {
+    resendApiKeyConfigured: key.length > 0 && key.length <= 256 && !/\s/.test(key),
+    senderConfigured: validSender,
+    senderMatchesExpectedDomain: validSender && senderAddress.split("@")[1]?.toLowerCase() === "elevantrastudios.com.ng",
+    recipientMatchesExpected: config.to?.trim().toLowerCase() === "elevantrastudios@gmail.com",
+    retrySecretConfigured: !!config.retrySecret && config.retrySecret.length >= 32 && config.retrySecret.length <= 512,
+  };
+  type DomainCheck = { domainVerified: boolean | null; code: "verified" | "not_verified" | "not_found" | "access_denied" | "unavailable" };
+  let provider: DomainCheck = { domainVerified: null, code: "unavailable" };
+  if (!configuration.resendApiKeyConfigured) return { ok: true, configuration, provider };
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const timedOut = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => { controller.abort(); reject(new Error("readiness_timeout")); }, dependencies.providerTimeoutMs ?? 8000);
+    });
+    const response = await Promise.race([(dependencies.fetch || fetch)("https://api.resend.com/domains?limit=100", {
+      method: "GET", headers: { Authorization: `Bearer ${key}` }, signal: controller.signal,
+    }), timedOut]);
+    if (response.status === 401 || response.status === 403) provider = { domainVerified: null, code: "access_denied" };
+    else if (response.ok) {
+      const body: unknown = await Promise.race([response.json(), timedOut]);
+      if (body && typeof body === "object" && !Array.isArray(body) && Array.isArray((body as Record<string, unknown>).data)) {
+        const page = body as { data: unknown[]; has_more?: unknown };
+        const domain = page.data.find((item): item is Record<string, unknown> => !!item && typeof item === "object" &&
+          !Array.isArray(item) && (item as Record<string, unknown>).name === "elevantrastudios.com.ng");
+        if (domain && typeof domain.status === "string") provider = { domainVerified: domain.status === "verified", code: domain.status === "verified" ? "verified" : "not_verified" };
+        else if (!domain && page.has_more === false) provider = { domainVerified: false, code: "not_found" };
+        // An incomplete/ambiguous page cannot prove the target domain is absent.
+      }
+    }
+  } catch { /* Never expose provider errors, credential values or unrelated domains. */ }
+  finally { clearTimeout(timer); }
+  return { ok: true, configuration, provider };
+}
+
+/** Inspect only the provider ID already attached to an accepted notification. */
+async function enquiryDeliveryStatus(enquiry: StoredEnquiry, dependencies: Dependencies) {
+  type DeliveryStatus = { providerMessageId: string | null; lastEvent: string | null; code: "checked" | "not_accepted" | "access_denied" | "unavailable" };
+  const providerId = enquiry.provider_message_id;
+  if (enquiry.state !== "accepted" || !providerId) return { providerMessageId: null, lastEvent: null, code: "not_accepted" } satisfies DeliveryStatus;
+  const unavailable: DeliveryStatus = { providerMessageId: providerId, lastEvent: null, code: "unavailable" };
+  const key = dependencies.config.resendApiKey?.trim() || "";
+  if (!key || key.length > 256 || /\s/.test(key) || providerId.length > 200 || /[\r\n]/.test(providerId)) return unavailable;
+  const knownEvents = new Set(["sent", "delivered", "bounced", "complained", "delivery_delayed", "failed", "queued", "scheduled", "canceled", "opened", "clicked", "suppressed"]);
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const timedOut = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => { controller.abort(); reject(new Error("delivery_status_timeout")); }, dependencies.providerTimeoutMs ?? 8000);
+    });
+    const response = await Promise.race([(dependencies.fetch || fetch)(`https://api.resend.com/emails/${encodeURIComponent(providerId)}`, {
+      method: "GET", headers: { Authorization: `Bearer ${key}` }, signal: controller.signal,
+    }), timedOut]);
+    if (response.status === 401 || response.status === 403) return { ...unavailable, code: "access_denied" } satisfies DeliveryStatus;
+    if (!response.ok) return unavailable;
+    const body: unknown = await Promise.race([response.json(), timedOut]);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return unavailable;
+    const result = body as Record<string, unknown>;
+    if (result.id !== providerId || typeof result.last_event !== "string" || !knownEvents.has(result.last_event)) return unavailable;
+    return { providerMessageId: providerId, lastEvent: result.last_event, code: "checked" } satisfies DeliveryStatus;
+  } catch { return unavailable; }
+  finally { clearTimeout(timer); }
+}
+
 export async function notifyEnquiry(id: string, dependencies: Dependencies): Promise<string> {
   const repository = dependencies.repository!;
   const enquiry = await repository.read(id);
@@ -163,7 +236,12 @@ export function createEnquiryHandler(dependencies: Dependencies): (request: Requ
     try {
       const body = await readJson(request, dependencies.bodyTimeoutMs ?? 3000);
       const action = body && typeof body === "object" && !Array.isArray(body) ? (body as Record<string, unknown>).action : undefined;
-      if (action === "retry" || action === "status") {
+      if (action === "readiness") {
+        if (!await authorizedOperator(request, dependencies.config.retrySecret)) return respond({ ok: false, code: "unauthorized", error: "Operator authorization is required." }, 401);
+        if (Object.keys(body as Record<string, unknown>).some((key) => key !== "action")) throw new RequestError(400, "invalid_readiness", "A readiness request must contain only its action.");
+        return respond(await enquiryReadiness(dependencies));
+      }
+      if (action === "retry" || action === "status" || action === "delivery-status") {
         if (!await authorizedOperator(request, dependencies.config.retrySecret)) return respond({ ok: false, code: "unauthorized", error: "Operator authorization is required." }, 401);
         const data = body as Record<string, unknown>;
         if (Object.keys(data).some((key) => key !== "action" && key !== "submissionId") || typeof data.submissionId !== "string" || !ENQUIRY_ID_PATTERN.test(data.submissionId)) throw new RequestError(400, "invalid_receipt", "A valid receipt ID is required.");
@@ -173,6 +251,7 @@ export function createEnquiryHandler(dependencies: Dependencies): (request: Requ
         if (action === "retry") outcome = await notifyEnquiry(id, dependencies);
         const record = await dependencies.repository.read(id);
         if (!record) return respond({ ok: false, code: "not_found", error: "No enquiry was found for that receipt." }, 404);
+        if (action === "delivery-status") return respond({ ok: true, receiptId: id, delivery: await enquiryDeliveryStatus(record, dependencies) });
         return respond({ ok: true, receiptId: id, receivedAt: record.received_at, notification: { state: record.state, attempts: record.attempts, providerMessageId: record.provider_message_id, lastErrorCode: record.last_error_code || null, ...(outcome ? { outcome } : {}) } });
       }
       const input = validateEnquiry(body);

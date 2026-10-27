@@ -259,3 +259,176 @@ test("a concurrent notify lease produces one provider request", async () => {
   release(); assert.equal((await first).status, 201);
   assert.equal(s.records.get(receipt).attempts, 1); assert.equal(s.counts().inserts, 1);
 });
+
+const readinessConfig = () => ({ ...config(), from: "Elevantra Studios <enquiries@elevantrastudios.com.ng>", to: "elevantrastudios@gmail.com" });
+const readinessRequest = (fields = {}, authorization = `Bearer ${config().retrySecret}`) => request({ action: "readiness", ...fields }, { authorization });
+
+test("readiness requires operator authentication and a strict action-only body before provider or database access", async () => {
+  let probes = 0;
+  const s = setup({ repository: null, config: readinessConfig(), fetch: async () => { probes++; throw new Error("must not probe"); } });
+  for (const authorization of ["", "Bearer sb_publishable_public", "Bearer customer-session-jwt", `Bearer ${config().retrySecret}X`]) {
+    const response = await s.handler(readinessRequest({}, authorization));
+    assert.equal(response.status, 401);
+    assert.deepEqual(await response.json(), { ok: false, code: "unauthorized", error: "Operator authorization is required." });
+  }
+  const extra = await s.handler(readinessRequest({ submissionId: receipt }));
+  assert.equal(extra.status, 400); assert.equal((await extra.json()).code, "invalid_readiness");
+  assert.equal(probes, 0); assert.equal(s.counts().inserts, 0);
+});
+
+test("readiness checks the exact Resend domain without sending mail, storing data or disclosing configuration", async () => {
+  const calls = [];
+  const s = setup({ repository: null, config: readinessConfig(), fetch: async (url, options) => {
+    calls.push([url, options]);
+    return new Response(JSON.stringify({ data: [
+      { id: "other-private-domain-id", name: "unrelated-private.example", status: "verified" },
+      { id: "target-private-domain-id", name: "elevantrastudios.com.ng", status: "verified" },
+    ], has_more: false }));
+  } });
+  const response = await s.handler(readinessRequest()); const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.deepEqual(body, { ok: true, configuration: {
+    resendApiKeyConfigured: true, senderConfigured: true, senderMatchesExpectedDomain: true,
+    recipientMatchesExpected: true, retrySecretConfigured: true,
+  }, provider: { domainVerified: true, code: "verified" } });
+  const text = JSON.stringify(body);
+  for (const privateValue of [config().resendApiKey, config().retrySecret, readinessConfig().from, readinessConfig().to, "unrelated-private.example", "target-private-domain-id"]) assert.ok(!text.includes(privateValue));
+  assert.equal(calls.length, 1); assert.equal(calls[0][0], "https://api.resend.com/domains?limit=100");
+  assert.equal(calls[0][1].method, "GET"); assert.equal(calls[0][1].body, undefined);
+  assert.equal(calls[0][1].headers.Authorization, `Bearer ${config().resendApiKey}`);
+  assert.equal(s.counts().inserts, 0);
+});
+
+test("readiness distinguishes pending, absent, partial and unauthorized Resend domain information", async () => {
+  const cases = [
+    [200, { data: [{ name: "elevantrastudios.com.ng", status: "pending" }], has_more: false }, { domainVerified: false, code: "not_verified" }],
+    [200, { data: [{ name: "different.example", status: "verified" }], has_more: false }, { domainVerified: false, code: "not_found" }],
+    [200, { data: [], has_more: true }, { domainVerified: null, code: "unavailable" }],
+    [200, { data: [], has_more: undefined }, { domainVerified: null, code: "unavailable" }],
+    [200, { unexpected: "private provider detail" }, { domainVerified: null, code: "unavailable" }],
+    [401, { message: "private provider detail" }, { domainVerified: null, code: "access_denied" }],
+    [403, { message: "sending-only key cannot list domains" }, { domainVerified: null, code: "access_denied" }],
+    [503, { message: "private provider failure" }, { domainVerified: null, code: "unavailable" }],
+  ];
+  for (const [status, payload, expected] of cases) {
+    const s = setup({ repository: null, config: readinessConfig(), fetch: async () => new Response(JSON.stringify(payload), { status }) });
+    const response = await s.handler(readinessRequest()); const text = await response.text();
+    assert.equal(response.status, 200); assert.deepEqual(JSON.parse(text).provider, expected);
+    assert.ok(!text.includes("private provider")); assert.ok(!text.includes("sending-only"));
+  }
+});
+
+test("readiness reports configuration mismatch safely and skips provider access when the sending key is missing", async () => {
+  let calls = 0;
+  const s = setup({ repository: null, config: { ...readinessConfig(), resendApiKey: undefined, from: "wrong@unverified.example", to: "wrong-private-recipient@example.com" }, fetch: async () => { calls++; throw new Error("must not run"); } });
+  const response = await s.handler(readinessRequest()); const body = await response.json();
+  assert.deepEqual(body.configuration, { resendApiKeyConfigured: false, senderConfigured: true,
+    senderMatchesExpectedDomain: false, recipientMatchesExpected: false, retrySecretConfigured: true });
+  assert.deepEqual(body.provider, { domainVerified: null, code: "unavailable" });
+  assert.equal(calls, 0); assert.ok(!JSON.stringify(body).includes("wrong-private-recipient"));
+  for (const from of [undefined, "Elevantra <onboarding@resend.dev>", "X\r\nBcc:bad@example.com"]) {
+    s.dependencies.config.from = from;
+    const data = await (await s.handler(readinessRequest())).json();
+    assert.equal(data.configuration.senderConfigured, false); assert.equal(data.configuration.senderMatchesExpectedDomain, false);
+  }
+});
+
+test("readiness bounds provider and response-body stalls and never exposes underlying exceptions", async () => {
+  for (const provider of [async () => new Promise(() => {}), async () => { throw new Error("private Resend credential detail"); }, async () => new Response(new ReadableStream({ start() {} }))]) {
+    const s = setup({ repository: null, config: readinessConfig(), providerTimeoutMs: 5, fetch: provider });
+    const response = await s.handler(readinessRequest()); const text = await response.text();
+    assert.equal(response.status, 200); assert.deepEqual(JSON.parse(text).provider, { domainVerified: null, code: "unavailable" });
+    assert.ok(!text.includes("private Resend")); assert.equal(s.counts().inserts, 0);
+  }
+});
+
+function deliverySetup(state = "accepted", providerId = "provider-test-id", overrides = {}) {
+  const s = setup(overrides);
+  s.records.set(receipt, { ...validateEnquiry(input()), receipt_id: receipt, received_at: timestamp,
+    state, attempts: 1, provider_message_id: providerId, request_payload: null, last_error_code: null });
+  for (const operation of ["accept", "claim", "finish", "configurationFailure"]) {
+    s.repository[operation] = async () => { throw new Error("delivery inspection must not write or send"); };
+  }
+  return s;
+}
+
+test("delivery-status authenticates and validates the receipt before database or provider access", async () => {
+  let reads = 0; let calls = 0;
+  const s = deliverySetup("accepted", "provider-test-id", { fetch: async () => { calls++; throw new Error("must not run"); } });
+  s.repository.read = async () => { reads++; throw new Error("must not read before authorization"); };
+  for (const authorization of ["", "Bearer sb_publishable_public", "Bearer customer-session-jwt", `Bearer ${config().retrySecret}X`]) {
+    assert.equal((await s.handler(operator("delivery-status", receipt, { authorization }))).status, 401);
+  }
+  assert.equal((await s.handler(operator("delivery-status", "invalid"))).status, 400);
+  assert.equal((await s.handler(request({ action: "delivery-status", submissionId: receipt, providerMessageId: "chosen-by-caller" }, { authorization: `Bearer ${config().retrySecret}` }))).status, 400);
+  assert.equal(reads, 0); assert.equal(calls, 0);
+  const unavailable = setup({ repository: null });
+  assert.equal((await unavailable.handler(operator("delivery-status"))).status, 503);
+});
+
+test("delivery-status reads only the stored provider ID and returns an allowed event without exposing email content", async () => {
+  const providerId = "provider/id?opaque";
+  const calls = [];
+  const s = deliverySetup("accepted", providerId, { fetch: async (url, options) => {
+    calls.push([url, options]);
+    return new Response(JSON.stringify({ id: providerId, last_event: "delivered", to: ["private-recipient@example.com"], from: "private-sender@example.com", html: "private email body", text: "private plain text" }));
+  } });
+  const storedBefore = JSON.stringify(s.records.get(receipt));
+  const response = await s.handler(operator("delivery-status")); const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.deepEqual(body, { ok: true, receiptId: receipt, delivery: { providerMessageId: providerId, lastEvent: "delivered", code: "checked" } });
+  assert.equal(calls.length, 1); assert.equal(calls[0][0], "https://api.resend.com/emails/provider%2Fid%3Fopaque");
+  assert.equal(calls[0][1].method, "GET"); assert.equal(calls[0][1].body, undefined);
+  assert.equal(calls[0][1].headers.Authorization, `Bearer ${config().resendApiKey}`);
+  for (const value of ["private-recipient@example.com", "private-sender@example.com", "private email body", "private plain text", config().resendApiKey, config().retrySecret]) assert.ok(!JSON.stringify(body).includes(value));
+  assert.equal(JSON.stringify(s.records.get(receipt)), storedBefore); assert.equal(s.counts().inserts, 0);
+});
+
+test("delivery-status skips provider access for absent or unaccepted enquiries", async () => {
+  let calls = 0;
+  for (const [state, id] of [["pending", null], ["sending", null], ["failed", null], ["accepted", null]]) {
+    const s = deliverySetup(state, id, { fetch: async () => { calls++; throw new Error("must not call provider"); } });
+    const response = await s.handler(operator("delivery-status"));
+    assert.equal(response.status, 200); assert.deepEqual((await response.json()).delivery, { providerMessageId: null, lastEvent: null, code: "not_accepted" });
+  }
+  const missing = deliverySetup("accepted", "provider-test-id", { fetch: async () => { calls++; throw new Error("must not call provider"); } });
+  assert.equal((await missing.handler(operator("delivery-status", secondReceipt))).status, 404);
+  assert.equal(calls, 0);
+});
+
+test("delivery-status accepts known provider events while treating unknown or mismatched responses as unverified", async () => {
+  const known = ["sent", "delivered", "bounced", "complained", "delivery_delayed", "failed", "queued", "scheduled", "canceled", "opened", "clicked", "suppressed"];
+  for (const last_event of known) {
+    const s = deliverySetup("accepted", "provider-test-id", { fetch: async () => new Response(JSON.stringify({ id: "provider-test-id", last_event })) });
+    const data = await (await s.handler(operator("delivery-status"))).json();
+    assert.deepEqual(data.delivery, { providerMessageId: "provider-test-id", lastEvent: last_event, code: "checked" });
+  }
+  for (const payload of [{ id: "provider-test-id", last_event: "unknown-private-provider-state" }, { id: "different-message", last_event: "delivered" }, { last_event: "delivered" }, { id: "provider-test-id", last_event: null }, [{ id: "provider-test-id", last_event: "delivered" }]]) {
+    const s = deliverySetup("accepted", "provider-test-id", { fetch: async () => new Response(JSON.stringify(payload)) });
+    const response = await s.handler(operator("delivery-status")); const text = await response.text();
+    assert.equal(response.status, 200); assert.deepEqual(JSON.parse(text).delivery, { providerMessageId: "provider-test-id", lastEvent: null, code: "unavailable" });
+    assert.ok(!text.includes("unknown-private-provider-state")); assert.ok(!text.includes("different-message"));
+  }
+});
+
+test("delivery-status handles sending-only credentials and provider outages without leaking raw errors", async () => {
+  for (const status of [401, 403, 404, 429, 500]) {
+    const s = deliverySetup("accepted", "provider-test-id", { fetch: async () => new Response(JSON.stringify({ message: "private provider failure" }), { status }) });
+    const response = await s.handler(operator("delivery-status")); const text = await response.text();
+    assert.equal(response.status, 200); assert.deepEqual(JSON.parse(text).delivery, { providerMessageId: "provider-test-id", lastEvent: null, code: [401, 403].includes(status) ? "access_denied" : "unavailable" });
+    assert.ok(!text.includes("private provider failure"));
+  }
+  let calls = 0;
+  const missingKey = deliverySetup("accepted", "provider-test-id", { config: { ...config(), resendApiKey: undefined }, fetch: async () => { calls++; throw new Error("must not run"); } });
+  assert.equal((await (await missingKey.handler(operator("delivery-status"))).json()).delivery.code, "unavailable"); assert.equal(calls, 0);
+});
+
+test("delivery-status bounds request and response-body stalls without altering notification acceptance", async () => {
+  for (const provider of [async () => new Promise(() => {}), async () => { throw new Error("private provider exception"); }, async () => new Response(new ReadableStream({ start() {} })), async () => new Response("invalid JSON")]) {
+    const s = deliverySetup("accepted", "provider-test-id", { providerTimeoutMs: 5, fetch: provider });
+    const before = JSON.stringify(s.records.get(receipt));
+    const response = await s.handler(operator("delivery-status")); const text = await response.text();
+    assert.equal(response.status, 200); assert.deepEqual(JSON.parse(text).delivery, { providerMessageId: "provider-test-id", lastEvent: null, code: "unavailable" });
+    assert.ok(!text.includes("private provider exception")); assert.equal(JSON.stringify(s.records.get(receipt)), before);
+  }
+});

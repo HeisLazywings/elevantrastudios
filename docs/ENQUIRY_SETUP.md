@@ -132,6 +132,15 @@ receipt ID and server receipt timestamp.
 
 ## 3. Deploy the function, then the website
 
+Management API activation requires a Supabase access token for this existing
+project with database read/write, Edge Functions Write (`edge_functions_write`)
+and Edge Function Secrets Write (`edge_functions_secrets_write`), plus their
+read permissions. A token that can inspect the project can still be denied
+deployment or secret updates. Store `SUPABASE_ACCESS_TOKEN` only in the trusted
+deployment environment's Secrets, allowing `api.supabase.com`; never enter it in
+chat or a public environment variable. A Resend sending key does not grant
+Supabase management access.
+
 From the repository root with authorized Supabase CLI access:
 
 ```bash
@@ -203,6 +212,31 @@ provider settings or obtain notification state. Status returns receipt/time,
 state, attempt count, error code and provider ID, with no name, email or message.
 Retries read the existing enquiry; they never insert another one.
 
+The same protected endpoint accepts the strict body `{action:'readiness'}` before
+or after the database migration. This read-only probe checks configuration inside
+the Edge runtime and calls Resend's domains API; it never accesses an enquiry or
+sends an email. It returns only configuration booleans and a domain verification
+result, never credentials, secret digests, sender/recipient values or raw provider
+errors. A verified result must match the exact `elevantrastudios.com.ng` domain.
+If a sending-only key cannot list domains, `access_denied` means verification is
+unknown: confirm **Resend → Domains → elevantrastudios.com.ng → Verified** rather
+than treating the added domain or its visible DNS records as proof. An incomplete
+API page or unavailable provider also remains unknown. The existing terminal
+helper handles receipt status/retry; use an authorized server-side HTTP client
+with the same operator bearer secret for the readiness request.
+
+After a notification is accepted, the protected body
+`{action:'delivery-status',submissionId:RECEIPT_UUID}` reads Resend's current event
+for the provider message ID already attached to that receipt. Callers cannot
+supply a different provider ID. This action never sends, retries or updates an
+enquiry/notification; it returns only the receipt, stored provider ID and an
+allowlisted event such as `sent`, `delivered`, `bounced` or `delivery_delayed`.
+Unknown or mismatched provider responses remain unverified, and an `access_denied`
+result means the sending key cannot inspect delivery: check that stored ID in the
+Resend dashboard. Provider `delivered` is still separate from the business owner's
+confirmation that the message is visible in the intended inbox. Use the same
+authorized server-side HTTP client/operator bearer secret for this request.
+
 If status says `busy`, wait for the 60-second lease before trying status again.
 If `exhausted` or `expired`, inspect Resend using the receipt/provider ID before
 any manual action. Do not change the receipt or idempotency key to force an
@@ -221,7 +255,8 @@ Only after the migration, function, verified sender and website deployment:
    notification row. Do not share customer rows or secrets.
 3. Run protected `status RECEIPT_UUID`. `accepted` plus a provider ID proves Resend
    accepted the email, not delivery. Check that ID in Resend for delivery/bounce
-   status. Verify Reply-To, all fields, receipt and timestamp in the email.
+   status through protected `delivery-status` or the dashboard. Verify Reply-To,
+   all fields, receipt and timestamp in the email.
 4. Confirm the message actually reached the business inbox (and check spam). If
    access to that inbox is unavailable, ask the owner to confirm receipt; report
    that separately from provider acceptance.
