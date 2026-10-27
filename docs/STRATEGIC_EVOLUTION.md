@@ -1,5 +1,10 @@
 # Commercial systems positioning: implementation map
 
+This records the PR #5 positioning change. The later [enquiry and visual
+refinement](review/enquiry-refinement/README.md) replaces the contact pipeline
+described below and introduces explicitly approved light logo variants; follow
+[the current enquiry setup](ENQUIRY_SETUP.md) for deployment.
+
 This is an incremental frontend and content change to the existing Next.js App Router site. It retains TypeScript, Tailwind, Inter/Fraunces, Framer Motion, the current contact pipeline, and the Supabase CMS.
 
 ## Three new pages

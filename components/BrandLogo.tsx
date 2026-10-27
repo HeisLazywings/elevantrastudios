@@ -7,21 +7,22 @@ export const keystonePaths = [
 ] as const;
 
 const variants = {
-  horizontal: { src: "/brand/keystone-horizontal-ink.svg", width: 1460, height: 352, classes: "w-[200px] min-[360px]:w-[216px] sm:w-[228px] lg:w-[248px]" },
-  stacked: { src: "/brand/keystone-stacked-ink.svg", width: 1000, height: 540, classes: "w-[300px]" },
-  symbol: { src: "/brand/keystone-symbol-ink.svg", width: 288, height: 288, classes: "w-11" },
+  horizontal: { width: 1460, height: 352, classes: "w-[200px] min-[360px]:w-[216px] sm:w-[228px] lg:w-[248px]" },
+  stacked: { width: 1000, height: 540, classes: "w-[300px]" },
+  symbol: { width: 288, height: 288, classes: "w-11" },
 };
 
-/** Original ink artwork sits on a quiet light plate; no colour filters or redrawing. */
-export default function BrandLogo({ variant = "horizontal", decorative = false, className = "" }: {
+/** Colour-only SVG variants retain the approved artwork and transparent clear space. */
+export default function BrandLogo({ variant = "horizontal", tone = "light", decorative = false, className = "" }: {
   variant?: keyof typeof variants;
+  tone?: "light" | "ink";
   decorative?: boolean;
   className?: string;
 }) {
   const asset = variants[variant];
   return (
-    <span className={`inline-flex max-w-full shrink-0 overflow-hidden rounded-sm bg-[#F3EFE6] ${className}`}>
-      <img src={asset.src} width={asset.width} height={asset.height} alt={decorative ? "" : siteName} className={`block h-auto max-w-full ${asset.classes}`} />
+    <span className={`inline-flex max-w-full shrink-0 bg-transparent ${className}`}>
+      <img src={`/brand/keystone-${variant}-${tone}.svg`} width={asset.width} height={asset.height} alt={decorative ? "" : siteName} className={`block h-auto max-w-full bg-transparent ${asset.classes}`} />
     </span>
   );
 }

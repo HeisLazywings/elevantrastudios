@@ -1,0 +1,4 @@
+# Public intake uses a publishable apikey, not a customer-session JWT.
+# The handler validates input, rate-limits in Postgres, and authenticates operator actions separately.
+[functions.submit-enquiry]
+verify_jwt = false
