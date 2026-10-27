@@ -139,6 +139,29 @@ section[id], h2[id] {
   scroll-margin-top: 8rem;
 }
 
+/* Peripheral, static geometry. Layout and reading surfaces remain independent. */
+.hero-structure {
+  bottom: -9.5rem;
+  left: max(calc((100vw - 1280px) / 2 + 350px), 32%);
+  width: 35rem;
+  height: 26.25rem;
+  mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 82%, transparent);
+}
+
+.business-structure {
+  bottom: -.125rem;
+  left: 0;
+  width: min(100%, 27.5rem);
+  height: 4.75rem;
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
+
+.journey-handoff {
+  top: 2.45rem;
+  right: -.75rem;
+  left: 3.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -23,7 +23,7 @@ export default function JourneyPreview() {
           <p className="text-base leading-relaxed text-white/65">Systems and customer experiences can help at specific points along this journey. The first task is to establish where an improvement is needed and which part we can responsibly address.</p>
         </Reveal>
       </div>
-      <Reveal><CommercialJourney steps={journey} label="Illustrative commercial journey, not a prediction of results" /></Reveal>
+      <Reveal><CommercialJourney steps={journey} label="Illustrative commercial journey, not a prediction of results" structuralHandoffs /></Reveal>
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-2xl text-xs leading-relaxed text-white/50">A useful discussion framework. The sequence and responsibilities differ between businesses.</p>
         <Link href="/commercial-challenges" className="text-link">Where friction can arise <ArrowUpRight size={16} aria-hidden="true" /></Link>

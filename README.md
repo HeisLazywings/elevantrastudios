@@ -26,11 +26,11 @@ Set variables in `.env.local` locally and in Vercel project settings. Never comm
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin; defaults to `https://www.elevantrastudios.com.ng`. Override and rebuild if the production domain changes. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Existing contact integration's Supabase project URL. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key; never use a service-role key. |
-| `RESEND_API_KEY` | Server-only email notification key. |
-| `RESEND_FROM_EMAIL` | Optional verified sender, e.g. `Elevantra Studios <hello@your-domain>`. The existing Resend onboarding sender remains the default and is subject to provider restrictions. |
 | `CONTENT_PREVIEW` | Local review only: `true` enables ignored private draft files. Keep unset in public deployments. This is a local operator setting, not an authentication system. |
 
-Without Supabase settings, the contact page offers email rather than crashing. With settings, the existing `contact_submissions` insert remains first, followed by the email notification. Configure the table's intended insert policy and provider sender permissions in Supabase/Resend. No schema or credentials for that existing integration are provisioned by this redesign.
+Without Supabase settings, the contact page offers email rather than crashing. The form makes one anonymous request to the Supabase `submit-enquiry` Edge Function. That function validates and durably saves the enquiry before attempting notification. Resend credentials belong in **Supabase Edge Function Secrets**, not Vercel or public environment variables. The old `/api/send-email` endpoint is retired.
+
+Follow [the enquiry deployment guide](docs/ENQUIRY_SETUP.md) for the additive migration, required secrets, verified sender, protected retries and a controlled delivery test. Deploying the website does **not** deploy the database migration or Edge Function; prepare the backend first.
 
 ## Content
 

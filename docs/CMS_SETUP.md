@@ -4,13 +4,13 @@ The CMS extends the studio’s existing Supabase project for Auth, PostgreSQL an
 
 ## Existing integration inspected
 
-Repository inspection found `lib/supabase.ts` using `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. `components/ContactForm.tsx` writes `name`, `email`, `company` and `message` (including the selected budget) to `contact_submissions`, then requests `/api/send-email`. That server route uses `RESEND_API_KEY`; this workflow remains in place.
+The website and CMS reuse `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. The contact form now calls the Supabase `submit-enquiry` Edge Function once; it owns durable storage and notifications. The retired `/api/send-email` route no longer sends mail. Follow [ENQUIRY_SETUP.md](ENQUIRY_SETUP.md) for this separate backend deployment; CMS login and publishing are unchanged.
 
 The checked-in application contained no Supabase Auth setup, Storage bucket definitions, database migrations or table policies. No project URL or Supabase key was injected into this cloud machine, so the existing remote tables beyond the referenced contact table, Auth configuration, Storage setup and data have **not** been inspected or verified. Check those in your existing dashboard before applying changes. The new `cms_*` schema, policies and private bucket are additive; existing enquiry tables and records are outside the migration’s scope.
 
 ## 1. Prepare the Supabase project
 
-Use the existing Supabase project already configured for the website. Reuse its URL, publishable key and Auth infrastructure. Preserve `contact_submissions`, its records and policies, and the existing email integration. The CMS migration adds separate `cms_*` objects and one private `cms-media` bucket; it does not replace the existing backend.
+Use the existing Supabase project already configured for the website. Reuse its URL, publishable key and Auth infrastructure. The CMS migration adds separate `cms_*` objects and one private `cms-media` bucket; it does not replace the existing backend or contact records. The separate enquiry migration preserves existing enquiries while deliberately restricting direct public contact-table access in favour of the validated Edge Function.
 
 Before applying the additive migration, back up the existing project and confirm its project reference. Inspect existing tables, Auth settings and Storage buckets in your dashboard. Their remote state was not available to this coding session and has not been verified. No new hosted Supabase project is required or has been created. Test locally or through an existing approved development environment; do not reset the production database.
 
@@ -84,7 +84,7 @@ Create an ignored `.env.local` for local development. Put the same applicable se
 
 The project URL and publishable/anonymous key are intended for public clients. Database and Storage RLS enforce access; these keys do not make someone an administrator. **Never use a `service_role` key, `sb_secret_...` key or database password in a `NEXT_PUBLIC_*` variable. The application does not need a service-role key.**
 
-Keep the existing `RESEND_API_KEY` server-only and preserve `RESEND_FROM_EMAIL` and any existing contact integration settings. The CMS does not replace the contact workflow. Keep the old local `CONTENT_PREVIEW` flag unset in public deployments; authenticated CMS preview is the production draft-review mechanism.
+Set enquiry sender secrets in Supabase Edge Function Secrets as described in [ENQUIRY_SETUP.md](ENQUIRY_SETUP.md); the CMS does not send enquiry notifications. Keep the old local `CONTENT_PREVIEW` flag unset in public deployments; authenticated CMS preview is the production draft-review mechanism.
 
 Environment files must stay ignored. Do not paste real values into this guide or commit credentials. Restart the local Next.js process after editing `.env.local`. Changes to `NEXT_PUBLIC_*` values require a new Next.js build because those values can be included in client bundles. On Vercel, changing the activation flag also requires an initial deployment to apply the new environment configuration.
 
