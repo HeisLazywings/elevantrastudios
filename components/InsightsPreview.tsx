@@ -40,7 +40,7 @@ export default async function InsightsPreview() {
                 <Link href={`/insights/${article.slug}`} className="block">
                   <div className="flex justify-between gap-4">
                     <p className="eyebrow">{article.category}</p>
-                    <span className="font-display text-sm italic text-white/40">{article.issue}</span>
+                    <span className="font-display text-sm italic text-white/60">{article.issue}</span>
                   </div>
                   <h3 className="mt-4 font-display text-2xl leading-tight transition-colors group-hover:text-gold-light sm:text-3xl">{article.title}</h3>
                   <p className="mt-4 text-sm leading-relaxed text-white/60">{article.summary}</p>
